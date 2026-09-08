@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Publication Radar · Local</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #0f766e;
+      --primary-hover: #0d9488;
+      --danger: #dc2626;
+      --seen: #16a34a;
+      --radius: 12px;
+      --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    .container { max-width: 960px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    header { text-align: center; margin-bottom: 1.75rem; }
+    header h1 {
+      font-size: 1.7rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--primary);
+    }
+    header p { color: var(--muted); margin-top: 0.3rem; font-size: 0.95rem; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.4rem;
+      margin-bottom: 1.15rem;
+      box-shadow: var(--shadow);
+    }
+    .card h2 {
+      font-size: 1.02rem;
+      font-weight: 600;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+    label {
+      display: block;
+      font-size: 0.84rem;
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+      color: var(--muted);
+    }
+    input[type="password"], input[type="text"], input[type="email"] {
+      width: 100%;
+      padding: 0.55rem 0.8rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      background: #fff;
+    }
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, .15);
+    }
+    .row { display: flex; gap: 0.7rem; flex-wrap: wrap; align-items: flex-end; }
+    .row > * { flex: 1; min-width: 130px; }
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 560;
+      padding: 0.55rem 1rem;
+      transition: background .15s, transform .1s;
+    }
+    button:active { transform: scale(0.98); }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-primary:disabled { background: #94a3b8; cursor: not-allowed; }
+    .btn-secondary {
+      background: #f1f5f9;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { background: #e2e8f0; }
+    .btn-danger {
+      background: #fef2f2;
+      color: var(--danger);
+      border: 1px solid #fecaca;
+    }
+    .btn-sm { padding: 0.32rem 0.7rem; font-size: 0.8rem; }
+    .journals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 0.4rem 0.9rem;
+      margin: 0.6rem 0 0.9rem;
+      max-height: 280px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .journal-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.45rem;
+      font-size: 0.88rem;
+      padding: 0.2rem 0;
+    }
+    .journal-item input {
+      width: 15px; height: 15px;
+      accent-color: var(--primary);
+      margin-top: 3px;
+      flex-shrink: 0;
+    }
+    .journal-meta { font-size: 0.75rem; color: var(--muted); }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      align-items: center;
+      margin-bottom: 0.9rem;
+    }
+    .filters {
+      display: flex;
+      gap: 0.3rem;
+      background: #f1f5f9;
+      padding: 0.22rem;
+      border-radius: 8px;
+    }
+    .filters button {
+      background: transparent;
+      color: var(--muted);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+    }
+    .filters button.active {
+      background: white;
+      color: var(--text);
+      box-shadow: var(--shadow);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary);
+      color: white;
+      font-size: 0.72rem;
+      font-weight: 600;
+      min-width: 1.3rem;
+      height: 1.3rem;
+      border-radius: 999px;
+      padding: 0 0.3rem;
+    }
+    .paper {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.05rem 1.15rem;
+      margin-bottom: 0.8rem;
+      background: var(--surface);
+    }
+    .paper.seen { opacity: 0.7; background: #f8fafc; }
+    .paper-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.8rem;
+      margin-bottom: 0.35rem;
+    }
+    .paper-title {
+      font-size: 1.02rem;
+      font-weight: 600;
+      color: var(--text);
+      text-decoration: none;
+      line-height: 1.35;
+    }
+    .paper-title:hover { color: var(--primary); text-decoration: underline; }
+    .paper-meta {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .paper-meta strong { color: #334155; }
+    .abstract {
+      font-size: 0.88rem;
+      color: #334155;
+      margin-bottom: 0.75rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .abstract.expanded { -webkit-line-clamp: unset; display: block; }
+    .paper-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+    }
+    .status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #94a3b8;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .status-dot.seen { background: var(--seen); }
+    .empty {
+      text-align: center;
+      padding: 2.2rem 1rem;
+      color: var(--muted);
+    }
+    .spinner {
+      display: inline-block;
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      vertical-align: middle;
+      margin-right: 0.35rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .alert {
+      padding: 0.7rem 0.95rem;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      margin-bottom: 0.9rem;
+    }
+    .alert-error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+    .alert-info { background: #f0fdfa; color: #0f766e; border: 1px solid #99f6e4; }
+    .alert-warn { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+    .footer-note {
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 1.5rem;
+    }
+    .source-tag {
+      font-size: 0.7rem;
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      margin-left: 0.3rem;
+    }
+    .source-tag.pubmed { background: #fce7f3; color: #9d174d; }
+    .source-tag.openalex { background: #ecfdf5; color: #047857; }
+    .source-tag.gpt { background: #f3e8ff; color: #7e22ce; }
+    @media (max-width: 600px) {
+      .paper-header { flex-direction: column; gap: 0.4rem; }
+      .toolbar { flex-direction: column; align-items: stretch; }
+      .filters { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Publication Radar</h1>
+      <p>Cualquier temática · revistas reales (OpenAlex + PubMed) · historial local</p>
+    </header>
+
+    <div class="card">
+      <h2>🔑 Claves API</h2>
+      <p style="font-size:0.83rem;color:var(--muted);margin-bottom:0.7rem;">
+        OpenAI es obligatoria. OpenAlex y PubMed funcionan sin clave (recomendado añadirlas para más cuota).
+      </p>
+      <div class="row" style="margin-bottom:0.6rem">
+        <div style="flex:3">
+          <label for="openaiKey">OpenAI API Key (obligatoria)</label>
+          <input type="password" id="openaiKey" placeholder="sk-..." autocomplete="off" />
+        </div>
+        <div style="flex:1;align-self:flex-end">
+          <button class="btn-primary" id="saveOpenaiBtn" style="width:100%">Guardar</button>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label for="openalexKey">OpenAlex API Key (opcional, gratis)</label>
+          <input type="password" id="openalexKey" placeholder="Dejar vacío si no tienes" autocomplete="off" />
+        </div>
+        <div>
+          <label for="pubmedEmail">Email para PubMed (recomendado)</label>
+          <input type="email" id="pubmedEmail" placeholder="tu@email.com" />
+        </div>
+        <div style="align-self:flex-end">
+          <button class="btn-secondary" id="saveExtraBtn" style="width:100%">Guardar extras</button>
+        </div>
+      </div>
+      <div id="keyStatus" style="margin-top:0.55rem;font-size:0.83rem;"></div>
+    </div>
+
+    <div class="card">
+      <h2>🎯 Temática</h2>
+      <p style="font-size:0.83rem;color:var(--muted);margin-bottom:0.7rem;">
+        Escribe la temática y la app buscará revistas relevantes en OpenAlex + PubMed y generará/recuperará papers.
+      </p>
+      <div class="row">
+        <div style="flex:3">
+          <label for="topicInput">Temática / área de interés</label>
+          <input type="text" id="topicInput" placeholder="Ej: cardiology, AI in radiology, nursing education, climate change..." />
+        </div>
+        <div style="flex:1;align-self:flex-end">
+          <button class="btn-primary" id="searchTopicBtn" style="width:100%">
+            <span id="searchLabel">Buscar revistas</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="journalsCard" style="display:none">
+      <h2>📚 Revistas encontradas <span id="journalsCount" class="badge">0</span></h2>
+      <p style="font-size:0.83rem;color:var(--muted);margin-bottom:0.5rem;">
+        Selecciona las que quieras seguir. Fuentes: OpenAlex, PubMed y GPT.
+      </p>
+      <div class="journals-grid" id="journalsGrid"></div>
+      <div style="display:flex;gap:0.55rem;flex-wrap:wrap;margin-top:0.6rem">
+        <button class="btn-primary" id="saveJournalsBtn">Guardar selección</button>
+        <button class="btn-secondary btn-sm" id="selectAllBtn">Todas</button>
+        <button class="btn-secondary btn-sm" id="deselectAllBtn">Ninguna</button>
+        <button class="btn-secondary btn-sm" id="addCustomBtn">+ Añadir manual</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="toolbar">
+        <button class="btn-primary" id="generateBtn" disabled>
+          <span id="generateLabel">📄 Obtener papers</span>
+        </button>
+        <button class="btn-secondary" id="forceBtn" disabled>Forzar nueva búsqueda</button>
+        <div class="filters" id="filters">
+          <button data-filter="all" class="active">Todos</button>
+          <button data-filter="unseen">No vistos <span class="badge" id="unseenCount">0</span></button>
+          <button data-filter="seen">Vistos</button>
+        </div>
+      </div>
+      <div id="alertBox"></div>
+      <div id="papersList">
+        <div class="empty">
+          1. Guarda tu API Key de OpenAI<br>
+          2. Escribe una temática y pulsa “Buscar revistas”<br>
+          3. Selecciona revistas y pulsa “Obtener papers”
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>⚙️ Datos locales</h2>
+      <div style="display:flex;gap:0.55rem;flex-wrap:wrap">
+        <button class="btn-secondary btn-sm" id="clearSeenBtn">Limpiar vistos</button>
+        <button class="btn-danger btn-sm" id="resetAllBtn">Resetear todo</button>
+      </div>
+      <p class="footer-note" style="text-align:left;margin-top:0.9rem">
+        Todo se guarda solo en localStorage. No hay cuenta ni sincronización.
+        OpenAlex: <a href="https://openalex.org" target="_blank" rel="noopener">openalex.org</a> ·
+        PubMed: <a href="https://pubmed.ncbi.nlm.nih.gov" target="_blank" rel="noopener">pubmed.ncbi.nlm.nih.gov</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const SK = {
+      openai: "radar_openai",
+      openalex: "radar_openalex",
+      email: "radar_email",
+      topic: "radar_topic",
+      journals: "radar_journals",
+      followed: "radar_followed",
+      papers: "radar_papers",
+      seen: "radar_seen"
+    };
+
+    let state = {
+      openaiKey: localStorage.getItem(SK.openai) || "",
+      openalexKey: localStorage.getItem(SK.openalex) || "",
+      email: localStorage.getItem(SK.email) || "",
+      topic: localStorage.getItem(SK.topic) || "",
+      journals: JSON.parse(localStorage.getItem(SK.journals) || "[]"),
+      followed: JSON.parse(localStorage.getItem(SK.followed) || "[]"),
+      papers: JSON.parse(localStorage.getItem(SK.papers) || "[]"),
+      seen: JSON.parse(localStorage.getItem(SK.seen) || "[]"),
+      filter: "all",
+      loading: false
+    };
+
+    function save(key, val) {
+      localStorage.setItem(key, typeof val === "string" ? val : JSON.stringify(val));
+    }
+
+    function showAlert(msg, type = "error") {
+      const box = document.getElementById("alertBox");
+      box.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+      setTimeout(() => { if (box.innerHTML.includes(msg.slice(0, 30))) box.innerHTML = ""; }, 7000);
+    }
+
+    function escapeHtml(s) {
+      if (!s) return "";
+      return String(s)
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    // ---------- OpenAlex ----------
+    async function openAlexFetch(path) {
+      const url = new URL(`https://api.openalex.org${path}`);
+      if (state.openalexKey) url.searchParams.set("api_key", state.openalexKey);
+      url.searchParams.set("mailto", state.email || "radar@local.app");
+      const res = await fetch(url.toString());
+      if (!res.ok) throw new Error(`OpenAlex ${res.status}`);
+      return res.json();
+    }
+
+    async function findJournalsOpenAlex(topic) {
+      const journals = [];
+      try {
+        const sources = await openAlexFetch(`/sources?search=${encodeURIComponent(topic)}&per_page=50&filter=type:journal`);
+        (sources.results || []).forEach(s => {
+          journals.push({
+            id: s.id,
+            name: s.display_name,
+            issn: (s.issn_l || (s.issn && s.issn[0]) || ""),
+            works: s.works_count || 0,
+            source: "openalex",
+            openalexId: s.id
+          });
+        });
+
+        const works = await openAlexFetch(`/works?search=${encodeURIComponent(topic)}&per_page=1&group_by=primary_location.source.id`);
+        const groups = (works.group_by || []).slice(0, 35);
+        for (const g of groups) {
+          if (!g.key || g.key === "null") continue;
+          const already = journals.find(j => j.openalexId === g.key);
+          if (already) {
+            already.works = Math.max(already.works, g.count || 0);
+          } else {
+            try {
+              const id = g.key.replace("https://openalex.org/", "");
+              const src = await openAlexFetch(`/sources/${id}`);
+              journals.push({
+                id: src.id,
+                name: src.display_name,
+                issn: (src.issn_l || ""),
+                works: g.count || 0,
+                source: "openalex",
+                openalexId: src.id
+              });
+            } catch (_) {}
+          }
+        }
+      } catch (e) {
+        console.warn("OpenAlex journals error", e);
+      }
+      return journals;
+    }
+
+    function reconstructAbstract(inverted) {
+      if (!inverted || typeof inverted !== "object") return "";
+      const words = [];
+      for (const [word, positions] of Object.entries(inverted)) {
+        positions.forEach(pos => { words[pos] = word; });
+      }
+      return words.filter(Boolean).join(" ");
+    }
+
+    async function fetchPapersOpenAlex(topic, journalNames, limit = 15) {
+      const papers = [];
+      try {
+        const data = await openAlexFetch(
+          `/works?search=${encodeURIComponent(topic)}&sort=publication_date:desc&per_page=${limit}&filter=type:article`
+        );
+        (data.results || []).forEach(w => {
+          const source = w.primary_location?.source;
+          const journalName = source?.display_name || "Unknown";
+          const authors = (w.authorships || [])
+            .slice(0, 6)
+            .map(a => a.author?.display_name)
+            .filter(Boolean)
+            .join(", ");
+          const abstract = w.abstract_inverted_index
+            ? reconstructAbstract(w.abstract_inverted_index)
+            : (w.abstract || "");
+          papers.push({
+            id: w.id || `oa-${w.doi || Math.random().toString(36).slice(2)}`,
+            title: w.title || w.display_name || "Untitled",
+            authors: authors || "—",
+            journal: journalName,
+            date: w.publication_date || (w.publication_year ? `${w.publication_year}-01-01` : ""),
+            abstract: abstract.slice(0, 600),
+            doi: w.doi ? w.doi.replace("https://doi.org/", "") : "",
+            url: w.doi || w.id || "#",
+            source: "openalex"
+          });
+        });
+      } catch (e) {
+        console.warn("OpenAlex papers error", e);
+      }
+      return papers;
+    }
+
+    // ---------- PubMed ----------
+    async function findJournalsPubMed(topic) {
+      const journals = [];
+      try {
+        const term = encodeURIComponent(`${topic} AND ncbijournals[filter]`);
+        let url = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nlmcatalog&term=${term}&retmax=40&retmode=json`;
+        if (state.email) url += `&email=${encodeURIComponent(state.email)}&tool=PublicationRadar`;
+        const searchRes = await fetch(url);
+        if (!searchRes.ok) throw new Error("PubMed search failed");
+        const searchData = await searchRes.json();
+        const ids = searchData.esearchresult?.idlist || [];
+        if (!ids.length) return journals;
+
+        let sumUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=nlmcatalog&id=${ids.join(",")}&retmode=json`;
+        if (state.email) sumUrl += `&email=${encodeURIComponent(state.email)}&tool=PublicationRadar`;
+        const sumRes = await fetch(sumUrl);
+        if (!sumRes.ok) throw new Error("PubMed summary failed");
+        const sumData = await sumRes.json();
+        const result = sumData.result || {};
+        ids.forEach(id => {
+          const item = result[id];
+          if (!item) return;
+          const name = item.titleabbreviation || item.title || item.fulljournalname || id;
+          journals.push({
+            id: `pubmed-${id}`,
+            name: name,
+            issn: item.issn || item.essn || "",
+            works: 0,
+            source: "pubmed",
+            pubmedId: id
+          });
+        });
+      } catch (e) {
+        console.warn("PubMed journals (CORS frecuente):", e.message);
+      }
+      return journals;
+    }
+
+    async function fetchPapersPubMed(topic, limit = 10) {
+      const papers = [];
+      try {
+        const term = encodeURIComponent(topic);
+        let url = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${term}&retmax=${limit}&sort=date&retmode=json`;
+        if (state.email) url += `&email=${encodeURIComponent(state.email)}&tool=PublicationRadar`;
+        const searchRes = await fetch(url);
+        if (!searchRes.ok) throw new Error("PubMed esearch failed");
+        const searchData = await searchRes.json();
+        const ids = searchData.esearchresult?.idlist || [];
+        if (!ids.length) return papers;
+
+        let fetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${ids.join(",")}&retmode=xml`;
+        if (state.email) fetchUrl += `&email=${encodeURIComponent(state.email)}&tool=PublicationRadar`;
+        const fetchRes = await fetch(fetchUrl);
+        if (!fetchRes.ok) throw new Error("PubMed efetch failed");
+        const xml = await fetchRes.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(xml, "text/xml");
+        const articles = doc.querySelectorAll("PubmedArticle");
+        articles.forEach((art, i) => {
+          const title = art.querySelector("ArticleTitle")?.textContent || "Untitled";
+          const abstract = art.querySelector("AbstractText")?.textContent || "";
+          const journal = art.querySelector("Journal Title")?.textContent ||
+                          art.querySelector("ISOAbbreviation")?.textContent || "PubMed";
+          const year = art.querySelector("PubDate Year")?.textContent || "";
+          const month = art.querySelector("PubDate Month")?.textContent || "01";
+          const day = art.querySelector("PubDate Day")?.textContent || "01";
+          const authors = Array.from(art.querySelectorAll("Author"))
+            .slice(0, 5)
+            .map(a => {
+              const last = a.querySelector("LastName")?.textContent || "";
+              const init = a.querySelector("Initials")?.textContent || "";
+              return `${last} ${init}`.trim();
+            })
+            .filter(Boolean)
+            .join(", ");
+          const pmid = art.querySelector("PMID")?.textContent || ids[i];
+          const doiNode = Array.from(art.querySelectorAll("ArticleId")).find(n => n.getAttribute("IdType") === "doi");
+          const doi = doiNode?.textContent || "";
+          papers.push({
+            id: `pm-${pmid}`,
+            title,
+            authors: authors || "—",
+            journal,
+            date: year ? `${year}-${String(month).padStart(2,"0")}-${String(day).padStart(2,"0")}` : "",
+            abstract: abstract.slice(0, 600),
+            doi,
+            url: doi ? `https://doi.org/${doi}` : `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`,
+            source: "pubmed"
+          });
+        });
+      } catch (e) {
+        console.warn("PubMed papers (CORS frecuente):", e.message);
+      }
+      return papers;
+    }
+
+    // ---------- GPT ----------
+    async function gptSuggestJournals(topic) {
+      if (!state.openaiKey) return [];
+      const system = `Eres un experto en literatura científica. Devuelve SOLO un array JSON de 12-18 revistas académicas reales y relevantes para la temática dada.
+Cada objeto: {"name": "nombre exacto de la revista", "issn": "ISSN si lo conoces o vacío", "reason": "breve motivo"}
+Solo JSON puro, sin markdown.`;
+      const user = `Temática: ${topic}\nLista las mejores revistas académicas (peer-reviewed) donde se publica sobre este tema. Incluye tanto revistas top como especializadas.`;
+      try {
+        const res = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${state.openaiKey}`
+          },
+          body: JSON.stringify({
+            model: "gpt-4o-mini",
+            messages: [
+              { role: "system", content: system },
+              { role: "user", content: user }
+            ],
+            temperature: 0.4,
+            max_tokens: 1800
+          })
+        });
+        if (!res.ok) throw new Error("OpenAI error");
+        const data = await res.json();
+        let content = data.choices[0].message.content.trim()
+          .replace(/^```json\\s*/i, "").replace(/^```\\s*/i, "").replace(/\\s*```$/, "");
+        const arr = JSON.parse(content);
+        return (arr || []).map((j, i) => ({
+          id: `gpt-${i}-${Date.now()}`,
+          name: j.name,
+          issn: j.issn || "",
+          works: 0,
+          source: "gpt",
+          reason: j.reason || ""
+        }));
+      } catch (e) {
+        console.warn("GPT journals error", e);
+        return [];
+      }
+    }
+
+    async function gptGeneratePapers(topic, journals, n = 8) {
+      const system = `Eres un generador de registros bibliográficos realistas.
+Devuelve SOLO un array JSON de exactamente ${n} objetos con estas claves:
+id, title, authors, journal, date (YYYY-MM-DD últimos 120 días), abstract (120-180 palabras), doi, url
+El journal debe ser uno de la lista proporcionada. Solo JSON puro.`;
+      const user = `Temática: ${topic}
+Revistas permitidas: ${journals.join(" | ")}
+Genera ${n} papers recientes y realistas.`;
+      try {
+        const res = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${state.openaiKey}`
+          },
+          body: JSON.stringify({
+            model: "gpt-4o-mini",
+            messages: [
+              { role: "system", content: system },
+              { role: "user", content: user }
+            ],
+            temperature: 0.7,
+            max_tokens: 3200
+          })
+        });
+        if (!res.ok) return [];
+        const data = await res.json();
+        let content = data.choices[0].message.content.trim()
+          .replace(/^```json\\s*/i, "").replace(/^```\\s*/i, "").replace(/\\s*```$/, "");
+        const arr = JSON.parse(content);
+        return (arr || []).map((p, i) => ({
+          ...p,
+          id: p.id || `gpt-p-${Date.now()}-${i}`,
+          source: "gpt"
+        }));
+      } catch (_) {
+        return [];
+      }
+    }
+
+    // ---------- Render ----------
+    function renderJournals() {
+      const grid = document.getElementById("journalsGrid");
+      const card = document.getElementById("journalsCard");
+      if (!state.journals.length) {
+        card.style.display = "none";
+        return;
+      }
+      card.style.display = "block";
+      document.getElementById("journalsCount").textContent = state.journals.length;
+
+      const sorted = [...state.journals].sort((a, b) => (b.works || 0) - (a.works || 0));
+
+      grid.innerHTML = sorted.map(j => {
+        const checked = state.followed.includes(j.name) ? "checked" : "";
+        const tag = j.source === "openalex" ? "openalex" : j.source === "pubmed" ? "pubmed" : "gpt";
+        return `
+          <label class="journal-item">
+            <input type="checkbox" value="${escapeHtml(j.name)}" ${checked} />
+            <div>
+              <div>${escapeHtml(j.name)} <span class="source-tag ${tag}">${j.source}</span></div>
+              <div class="journal-meta">${j.issn ? "ISSN " + escapeHtml(j.issn) : ""} ${j.works ? "· ~" + j.works + " works" : ""} ${j.reason ? "· " + escapeHtml(j.reason) : ""}</div>
+            </div>
+          </label>`;
+      }).join("");
+    }
+
+    function renderPapers() {
+      const list = document.getElementById("papersList");
+      let papers = [...state.papers];
+      if (state.filter === "unseen") papers = papers.filter(p => !state.seen.includes(p.id));
+      else if (state.filter === "seen") papers = papers.filter(p => state.seen.includes(p.id));
+
+      const unseen = state.papers.filter(p => !state.seen.includes(p.id)).length;
+      document.getElementById("unseenCount").textContent = unseen;
+
+      if (!papers.length) {
+        list.innerHTML = `<div class="empty">${
+          state.papers.length === 0
+            ? "Aún no hay papers. Selecciona revistas y pulsa “Obtener papers”."
+            : "No hay papers con este filtro."
+        }</div>`;
+        return;
+      }
+
+      list.innerHTML = papers.map(p => {
+        const isSeen = state.seen.includes(p.id);
+        const tagClass = p.source === "openalex" ? "openalex" : p.source === "pubmed" ? "pubmed" : "gpt";
+        return `
+          <article class="paper ${isSeen ? "seen" : ""}" data-id="${escapeHtml(p.id)}">
+            <div class="paper-header">
+              <a class="paper-title" href="${escapeHtml(p.url)}" target="_blank" rel="noopener">${escapeHtml(p.title)}</a>
+              <span class="status-dot ${isSeen ? "seen" : ""}"></span>
+            </div>
+            <div class="paper-meta">
+              <strong>${escapeHtml(p.journal)}</strong> · ${escapeHtml(p.date)} · ${escapeHtml(p.authors)}
+              <span class="source-tag ${tagClass}">${p.source}</span>
+            </div>
+            <div class="abstract" id="abs-${escapeHtml(p.id)}">${escapeHtml(p.abstract)}</div>
+            <div class="paper-actions">
+              <button class="btn-secondary btn-sm toggle-abs" data-id="${escapeHtml(p.id)}">Ver abstract</button>
+              <button class="btn-sm ${isSeen ? "btn-secondary" : "btn-primary"} toggle-seen" data-id="${escapeHtml(p.id)}">
+                ${isSeen ? "Marcar no visto" : "Marcar visto"}
+              </button>
+              ${p.doi ? `<span style="font-size:0.75rem;color:var(--muted)">DOI: ${escapeHtml(p.doi)}</span>` : ""}
+            </div>
+          </article>`;
+      }).join("");
+
+      list.querySelectorAll(".toggle-seen").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.dataset.id;
+          const idx = state.seen.indexOf(id);
+          if (idx === -1) state.seen.push(id);
+          else state.seen.splice(idx, 1);
+          save(SK.seen, state.seen);
+          renderPapers();
+        });
+      });
+      list.querySelectorAll(".toggle-abs").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const el = document.getElementById(`abs-${btn.dataset.id}`);
+          el.classList.toggle("expanded");
+          btn.textContent = el.classList.contains("expanded") ? "Ocultar" : "Ver abstract";
+        });
+      });
+    }
+
+    // ---------- Main actions ----------
+    async function searchJournals() {
+      const topic = document.getElementById("topicInput").value.trim();
+      if (!topic) { showAlert("Escribe una temática."); return; }
+      if (!state.openaiKey) {
+        showAlert("Necesitas una API Key de OpenAI (se usa como fallback y enriquecimiento).");
+        return;
+      }
+      if (state.loading) return;
+      state.loading = true;
+      const btn = document.getElementById("searchTopicBtn");
+      const label = document.getElementById("searchLabel");
+      btn.disabled = true;
+      label.innerHTML = `<span class="spinner"></span> Buscando...`;
+
+      try {
+        state.topic = topic;
+        save(SK.topic, topic);
+
+        const [oaJournals, pmJournals, gptJournals] = await Promise.all([
+          findJournalsOpenAlex(topic),
+          findJournalsPubMed(topic),
+          gptSuggestJournals(topic)
+        ]);
+
+        const map = new Map();
+        const add = (list) => {
+          list.forEach(j => {
+            const key = j.name.toLowerCase().trim();
+            if (!map.has(key)) map.set(key, j);
+            else {
+              const existing = map.get(key);
+              existing.works = Math.max(existing.works || 0, j.works || 0);
+              if (j.source === "openalex") existing.openalexId = j.openalexId;
+              if (j.source === "pubmed") existing.pubmedId = j.pubmedId;
+            }
+          });
+        };
+        add(oaJournals);
+        add(pmJournals);
+        add(gptJournals);
+
+        state.journals = Array.from(map.values());
+        if (state.followed.length === 0) {
+          state.followed = state.journals
+            .sort((a, b) => (b.works || 0) - (a.works || 0))
+            .slice(0, 8)
+            .map(j => j.name);
+        }
+        save(SK.journals, state.journals);
+        save(SK.followed, state.followed);
+        renderJournals();
+        document.getElementById("generateBtn").disabled = false;
+        document.getElementById("forceBtn").disabled = false;
+
+        showAlert(
+          `Encontradas ${state.journals.length} revistas (OpenAlex: ${oaJournals.length}, PubMed: ${pmJournals.length}, GPT: ${gptJournals.length}).`,
+          "info"
+        );
+        if (pmJournals.length === 0) {
+          showAlert("PubMed no devolvió resultados (CORS frecuente en navegador). OpenAlex + GPT cubren la mayoría.", "warn");
+        }
+      } catch (e) {
+        console.error(e);
+        showAlert("Error al buscar revistas: " + e.message);
+      } finally {
+        state.loading = false;
+        btn.disabled = false;
+        label.textContent = "Buscar revistas";
+      }
+    }
+
+    async function getPapers(force = false) {
+      if (!state.followed.length) {
+        showAlert("Selecciona al menos una revista y pulsa “Guardar selección”.");
+        return;
+      }
+      if (state.loading) return;
+      if (state.papers.length && !force) {
+        renderPapers();
+        showAlert("Mostrando papers guardados. Usa “Forzar nueva búsqueda” para actualizar.", "info");
+        return;
+      }
+
+      state.loading = true;
+      const btn = document.getElementById("generateBtn");
+      const label = document.getElementById("generateLabel");
+      btn.disabled = true;
+      label.innerHTML = `<span class="spinner"></span> Obteniendo...`;
+
+      try {
+        const topic = state.topic || document.getElementById("topicInput").value.trim();
+        const [oaPapers, pmPapers] = await Promise.all([
+          fetchPapersOpenAlex(topic, state.followed, 15),
+          fetchPapersPubMed(topic, 10)
+        ]);
+
+        const seenTitles = new Set();
+        const papers = [];
+        const addUnique = (list) => {
+          list.forEach(p => {
+            const key = (p.doi || p.title).toLowerCase().slice(0, 80);
+            if (!seenTitles.has(key)) {
+              seenTitles.add(key);
+              papers.push(p);
+            }
+          });
+        };
+        addUnique(oaPapers);
+        addUnique(pmPapers);
+
+        if (papers.length < 6 && state.openaiKey) {
+          const extra = await gptGeneratePapers(topic, state.followed, 8);
+          addUnique(extra);
+        }
+
+        state.papers = papers.slice(0, 25);
+        save(SK.papers, state.papers);
+        renderPapers();
+        showAlert(`Se obtuvieron ${state.papers.length} papers.`, "info");
+      } catch (e) {
+        console.error(e);
+        showAlert("Error al obtener papers: " + e.message);
+      } finally {
+        state.loading = false;
+        btn.disabled = false;
+        label.textContent = "📄 Obtener papers";
+      }
+    }
+
+    // ---------- Events ----------
+    document.getElementById("saveOpenaiBtn").addEventListener("click", () => {
+      const key = document.getElementById("openaiKey").value.trim();
+      if (!key.startsWith("sk-")) {
+        showAlert("La API Key de OpenAI debe empezar por sk-");
+        return;
+      }
+      state.openaiKey = key;
+      save(SK.openai, key);
+      document.getElementById("openaiKey").value = "";
+      updateKeyStatus();
+      showAlert("API Key de OpenAI guardada.", "info");
+    });
+
+    document.getElementById("saveExtraBtn").addEventListener("click", () => {
+      state.openalexKey = document.getElementById("openalexKey").value.trim();
+      state.email = document.getElementById("pubmedEmail").value.trim();
+      save(SK.openalex, state.openalexKey);
+      save(SK.email, state.email);
+      document.getElementById("openalexKey").value = "";
+      updateKeyStatus();
+      showAlert("Claves extras guardadas.", "info");
+    });
+
+    document.getElementById("searchTopicBtn").addEventListener("click", searchJournals);
+    document.getElementById("generateBtn").addEventListener("click", () => getPapers(false));
+    document.getElementById("forceBtn").addEventListener("click", () => getPapers(true));
+
+    document.getElementById("saveJournalsBtn").addEventListener("click", () => {
+      const checks = document.querySelectorAll("#journalsGrid input[type=checkbox]");
+      state.followed = Array.from(checks).filter(c => c.checked).map(c => c.value);
+      save(SK.followed, state.followed);
+      showAlert(`Selección guardada (${state.followed.length} revistas).`, "info");
+    });
+
+    document.getElementById("selectAllBtn").addEventListener("click", () => {
+      document.querySelectorAll("#journalsGrid input").forEach(c => c.checked = true);
+    });
+    document.getElementById("deselectAllBtn").addEventListener("click", () => {
+      document.querySelectorAll("#journalsGrid input").forEach(c => c.checked = false);
+    });
+
+    document.getElementById("addCustomBtn").addEventListener("click", () => {
+      const name = prompt("Nombre exacto de la revista:");
+      if (!name || !name.trim()) return;
+      const exists = state.journals.some(j => j.name.toLowerCase() === name.trim().toLowerCase());
+      if (exists) { showAlert("Ya está en la lista."); return; }
+      state.journals.push({ id: `custom-${Date.now()}`, name: name.trim(), source: "manual", works: 0 });
+      state.followed.push(name.trim());
+      save(SK.journals, state.journals);
+      save(SK.followed, state.followed);
+      renderJournals();
+    });
+
+    document.getElementById("filters").addEventListener("click", e => {
+      const btn = e.target.closest("button[data-filter]");
+      if (!btn) return;
+      state.filter = btn.dataset.filter;
+      document.querySelectorAll("#filters button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      renderPapers();
+    });
+
+    document.getElementById("clearSeenBtn").addEventListener("click", () => {
+      if (!confirm("¿Borrar historial de vistos?")) return;
+      state.seen = [];
+      save(SK.seen, state.seen);
+      renderPapers();
+    });
+
+    document.getElementById("resetAllBtn").addEventListener("click", () => {
+      if (!confirm("¿Borrar TODO (claves, revistas, papers, historial)?")) return;
+      Object.values(SK).forEach(k => localStorage.removeItem(k));
+      location.reload();
+    });
+
+    function updateKeyStatus() {
+      const parts = [];
+      if (state.openaiKey) parts.push('<span style="color:var(--seen)">✓ OpenAI</span>');
+      if (state.openalexKey) parts.push('<span style="color:var(--seen)">✓ OpenAlex</span>');
+      if (state.email) parts.push('<span style="color:var(--seen)">✓ Email PubMed</span>');
+      document.getElementById("keyStatus").innerHTML = parts.length
+        ? parts.join(" · ")
+        : '<span style="color:var(--muted)">Ninguna clave guardada</span>';
+    }
+
+    function init() {
+      updateKeyStatus();
+      if (state.topic) document.getElementById("topicInput").value = state.topic;
+      if (state.journals.length) {
+        renderJournals();
+        document.getElementById("generateBtn").disabled = false;
+        document.getElementById("forceBtn").disabled = false;
+      }
+      renderPapers();
+    }
+    init();
+  </script>
+</body>
+</html>
