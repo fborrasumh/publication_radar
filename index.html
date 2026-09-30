@@ -58,1005 +58,930 @@
   };
 })();
 </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Publication Radar · Lo último de las revistas de tu tema</title>
+<meta name="description" content="Sigue las revistas de tu tema y recibe los artículos nuevos, todos reales, de OpenAlex y PubMed. Sin clave. Exporta a Zotero y, con clave, pide un resumen de novedades.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#0F2237; --acero:#2E4B6B; --acero-claro:#7C93AC; --gris:#5D7691;
+  --papel:#F3F6FA; --blanco:#FFFFFF; --linea:#D8E0E9; --linea-2:#E8EEF4;
+  --brasa:#E4572E; --brasa-osc:#C9441F; --brasa-suave:#FDEBE4;
+  --forjado:#0E7C6B; --forjado-suave:#E0F3EE; --aviso:#8A3617;
+  --c-ctx:#1F6FB2; --c-comp:#6B4FD8; --c-rda:#0E8C7A; --c-tema:#C98200; --c-eval:#E4572E; --c-final:#2E4B6B;
+  --sombra:0 1px 0 rgba(15,34,55,.05), 0 14px 34px -22px rgba(15,34,55,.45);
+  --sombra-alta:0 2px 0 rgba(15,34,55,.04), 0 22px 50px -24px rgba(15,34,55,.55);
+  --r:14px;
+  --display:"Bricolage Grotesque",Georgia,serif;
+  --texto:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--papel);color:var(--tinta);font-family:var(--texto);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;padding-bottom:84px}
+a{color:var(--acero)}
+:focus-visible{outline:3px solid var(--brasa);outline-offset:2px;border-radius:6px}
+.hidden{display:none!important}
+svg.i{width:1.15em;height:1.15em;vertical-align:-.2em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+code{font-family:var(--mono);font-size:.85em;background:var(--linea-2);padding:1px 5px;border-radius:5px}
 
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Publication Radar · Local</title>
-  <style>
-    :root {
-      --bg: #f8fafc;
-      --surface: #ffffff;
-      --border: #e2e8f0;
-      --text: #0f172a;
-      --muted: #64748b;
-      --primary: #0f766e;
-      --primary-hover: #0d9488;
-      --danger: #dc2626;
-      --seen: #16a34a;
-      --radius: 12px;
-      --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.5;
-      min-height: 100vh;
-    }
-    .container { max-width: 960px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
-    header { text-align: center; margin-bottom: 1.75rem; }
-    header h1 {
-      font-size: 1.7rem;
-      font-weight: 700;
-      letter-spacing: -0.025em;
-      color: var(--primary);
-    }
-    header p { color: var(--muted); margin-top: 0.3rem; font-size: 0.95rem; }
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.2rem 1.4rem;
-      margin-bottom: 1.15rem;
-      box-shadow: var(--shadow);
-    }
-    .card h2 {
-      font-size: 1.02rem;
-      font-weight: 600;
-      margin-bottom: 0.8rem;
-      display: flex;
-      align-items: center;
-      gap: 0.45rem;
-    }
-    label {
-      display: block;
-      font-size: 0.84rem;
-      font-weight: 500;
-      margin-bottom: 0.3rem;
-      color: var(--muted);
-    }
-    input[type="password"], input[type="text"], input[type="email"] {
-      width: 100%;
-      padding: 0.55rem 0.8rem;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 0.95rem;
-      background: #fff;
-    }
-    input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(15, 118, 110, .15);
-    }
-    .row { display: flex; gap: 0.7rem; flex-wrap: wrap; align-items: flex-end; }
-    .row > * { flex: 1; min-width: 130px; }
-    button {
-      cursor: pointer;
-      border: none;
-      border-radius: 8px;
-      font-size: 0.88rem;
-      font-weight: 560;
-      padding: 0.55rem 1rem;
-      transition: background .15s, transform .1s;
-    }
-    button:active { transform: scale(0.98); }
-    .btn-primary { background: var(--primary); color: white; }
-    .btn-primary:hover { background: var(--primary-hover); }
-    .btn-primary:disabled { background: #94a3b8; cursor: not-allowed; }
-    .btn-secondary {
-      background: #f1f5f9;
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-    .btn-secondary:hover { background: #e2e8f0; }
-    .btn-danger {
-      background: #fef2f2;
-      color: var(--danger);
-      border: 1px solid #fecaca;
-    }
-    .btn-sm { padding: 0.32rem 0.7rem; font-size: 0.8rem; }
-    .journals-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 0.4rem 0.9rem;
-      margin: 0.6rem 0 0.9rem;
-      max-height: 280px;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-    .journal-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.45rem;
-      font-size: 0.88rem;
-      padding: 0.2rem 0;
-    }
-    .journal-item input {
-      width: 15px; height: 15px;
-      accent-color: var(--primary);
-      margin-top: 3px;
-      flex-shrink: 0;
-    }
-    .journal-meta { font-size: 0.75rem; color: var(--muted); }
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.65rem;
-      align-items: center;
-      margin-bottom: 0.9rem;
-    }
-    .filters {
-      display: flex;
-      gap: 0.3rem;
-      background: #f1f5f9;
-      padding: 0.22rem;
-      border-radius: 8px;
-    }
-    .filters button {
-      background: transparent;
-      color: var(--muted);
-      padding: 0.35rem 0.75rem;
-      border-radius: 6px;
-    }
-    .filters button.active {
-      background: white;
-      color: var(--text);
-      box-shadow: var(--shadow);
-    }
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--primary);
-      color: white;
-      font-size: 0.72rem;
-      font-weight: 600;
-      min-width: 1.3rem;
-      height: 1.3rem;
-      border-radius: 999px;
-      padding: 0 0.3rem;
-    }
-    .paper {
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.05rem 1.15rem;
-      margin-bottom: 0.8rem;
-      background: var(--surface);
-    }
-    .paper.seen { opacity: 0.7; background: #f8fafc; }
-    .paper-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 0.8rem;
-      margin-bottom: 0.35rem;
-    }
-    .paper-title {
-      font-size: 1.02rem;
-      font-weight: 600;
-      color: var(--text);
-      text-decoration: none;
-      line-height: 1.35;
-    }
-    .paper-title:hover { color: var(--primary); text-decoration: underline; }
-    .paper-meta {
-      font-size: 0.8rem;
-      color: var(--muted);
-      margin-bottom: 0.5rem;
-    }
-    .paper-meta strong { color: #334155; }
-    .abstract {
-      font-size: 0.88rem;
-      color: #334155;
-      margin-bottom: 0.75rem;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    .abstract.expanded { -webkit-line-clamp: unset; display: block; }
-    .paper-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.45rem;
-      align-items: center;
-    }
-    .status-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: #94a3b8;
-      display: inline-block;
-      flex-shrink: 0;
-    }
-    .status-dot.seen { background: var(--seen); }
-    .empty {
-      text-align: center;
-      padding: 2.2rem 1rem;
-      color: var(--muted);
-    }
-    .spinner {
-      display: inline-block;
-      width: 16px; height: 16px;
-      border: 2px solid rgba(255,255,255,.3);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
-      vertical-align: middle;
-      margin-right: 0.35rem;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .alert {
-      padding: 0.7rem 0.95rem;
-      border-radius: 8px;
-      font-size: 0.88rem;
-      margin-bottom: 0.9rem;
-    }
-    .alert-error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
-    .alert-info { background: #f0fdfa; color: #0f766e; border: 1px solid #99f6e4; }
-    .alert-warn { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
-    .footer-note {
-      text-align: center;
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-top: 1.5rem;
-    }
-    .source-tag {
-      font-size: 0.7rem;
-      background: #e0f2fe;
-      color: #0369a1;
-      padding: 0.1rem 0.4rem;
-      border-radius: 4px;
-      margin-left: 0.3rem;
-    }
-    .source-tag.pubmed { background: #fce7f3; color: #9d174d; }
-    .source-tag.openalex { background: #ecfdf5; color: #047857; }
-    .source-tag.gpt { background: #f3e8ff; color: #7e22ce; }
-    @media (max-width: 600px) {
-      .paper-header { flex-direction: column; gap: 0.4rem; }
-      .toolbar { flex-direction: column; align-items: stretch; }
-      .filters { justify-content: center; }
-    }
-  </style>
+/* Barra superior */
+.topbar{position:sticky;top:0;z-index:40;background:var(--tinta);color:#EAF1F7;box-shadow:0 6px 24px -14px rgba(0,0,0,.6)}
+.tb-in{max-width:1180px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:14px}
+.logo{background:none;border:0;color:#fff;font-family:var(--display);font-weight:800;font-size:24px;letter-spacing:-.03em;cursor:pointer;padding:2px 4px;display:flex;align-items:center;gap:8px}
+.logo em{font-style:normal;color:var(--brasa)}
+.logo .anv{width:30px;height:30px;border-radius:9px;background:var(--brasa);display:grid;place-items:center;color:#fff}
+.stepper{flex:1;display:flex;align-items:center;justify-content:center;min-width:0}
+.sdot{display:flex;align-items:center;gap:7px;background:none;border:0;color:#8FA7BE;font:600 13px var(--texto);padding:6px;cursor:pointer;border-radius:10px;white-space:nowrap}
+.sdot:disabled{cursor:not-allowed;opacity:.45}
+.sdot .n{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;border:2px solid #3E5C7D;font-size:12px;color:#A9C0D4;transition:all .2s}
+.sdot .n svg{width:14px;height:14px}
+.sdot[data-state="done"] .n{background:var(--forjado);border-color:var(--forjado);color:#fff}
+.sdot[data-state="now"]{color:#fff}
+.sdot[data-state="now"] .n{background:var(--brasa);border-color:var(--brasa);color:#fff;box-shadow:0 0 0 4px rgba(228,87,46,.25)}
+.sdot:not(:disabled):hover{background:rgba(255,255,255,.06)}
+.sline{flex:0 1 26px;height:2px;background:#2F4A68;min-width:6px}
+.sline.on{background:var(--forjado)}
+.tb-tools{display:flex;gap:6px}
+.tb-btn{background:transparent;border:1px solid #3E5C7D;color:#C9D8E6;border-radius:9px;padding:6px 10px;font:600 13px var(--texto);cursor:pointer;display:flex;align-items:center;gap:6px}
+.tb-btn:hover{border-color:var(--brasa);color:#fff}
+.progress{height:4px;background:#1E3550}
+.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brasa),#F59E0B);transition:width .4s}
+@media(max-width:960px){.sdot .lbl{display:none}.sdot[data-state="now"] .lbl{display:inline}}
+@media(max-width:720px){
+  .tb-in{flex-wrap:wrap;gap:8px}
+  .stepper{order:3;flex-basis:100%;justify-content:space-between}
+  .sdot[data-state="now"] .lbl{display:none}
+  .tb-btn .lbl{display:none}
+}
+
+/* Pantallas */
+main{max-width:1180px;margin:0 auto;padding:26px 16px 40px}
+.screen{display:none}
+.screen.on{display:block}
+@media(prefers-reduced-motion:no-preference){.screen.on{animation:rise .35s cubic-bezier(.2,.7,.3,1) both}@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}}
+.sh{display:flex;gap:18px;align-items:flex-start;margin:4px 0 22px}
+.sh-ico{width:64px;height:64px;border-radius:18px;background:var(--c,var(--brasa));color:#fff;display:grid;place-items:center;flex:none;box-shadow:0 12px 24px -14px var(--c,var(--brasa))}
+.sh-ico svg{width:32px;height:32px}
+.sh-step{font:600 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--acero-claro);margin:4px 0}
+.sh h2{font-family:var(--display);font-weight:800;font-size:clamp(26px,3.6vw,38px);letter-spacing:-.025em;line-height:1.05;margin:0 0 6px}
+.sh-lede{margin:0;color:var(--gris);font-size:16.5px;max-width:70ch}
+@media(max-width:600px){.sh-ico{width:48px;height:48px;border-radius:14px}.sh-ico svg{width:24px;height:24px}}
+
+.card{background:var(--blanco);border:1px solid var(--linea);border-radius:var(--r);box-shadow:var(--sombra);padding:20px;margin-bottom:18px}
+.card h3{font-family:var(--display);font-weight:700;font-size:19px;letter-spacing:-.01em;margin:0 0 4px;display:flex;align-items:center;gap:9px}
+.card h3 .num{width:26px;height:26px;border-radius:8px;background:var(--tinta);color:#fff;font:700 13px var(--mono);display:grid;place-items:center}
+.card .sub{margin:0 0 14px;color:var(--gris);font-size:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cols{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:20px;align-items:start}
+.sticky{position:sticky;top:96px}
+@media(max-width:900px){.cols{grid-template-columns:1fr}.sticky{position:static}}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+
+label,.lab{display:block;font-size:13.5px;font-weight:600;margin:0 0 6px;color:var(--acero)}
+label small,.lab small{font-weight:500;color:var(--acero-claro)}
+input[type=text],input[type=password],input[type=number],textarea,select{width:100%;padding:11px 13px;border:1.5px solid var(--linea);border-radius:10px;font-family:var(--texto);font-size:15px;color:var(--tinta);background:#fff;transition:border-color .15s,box-shadow .15s}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--acero-claro);box-shadow:0 0 0 4px rgba(124,147,172,.18)}
+input.bad{border-color:var(--brasa);box-shadow:0 0 0 4px rgba(228,87,46,.15)}
+textarea{resize:vertical;min-height:96px;line-height:1.5}
+input::placeholder,textarea::placeholder{color:#9DB0C2}
+.field{margin-bottom:16px}
+.help{font-size:12.8px;color:var(--gris);margin:6px 0 0}
+.help b{color:var(--acero)}
+
+button{font-family:var(--texto);cursor:pointer}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:11px;font-weight:600;font-size:15px;border:1.5px solid transparent;padding:11px 18px;transition:transform .08s,background .15s,border-color .15s;text-decoration:none;line-height:1.2}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--brasa);color:#fff;box-shadow:0 8px 18px -10px var(--brasa)}
+.btn-primary:hover{background:var(--brasa-osc)}
+.btn-big{font-size:17px;padding:14px 24px;border-radius:13px}
+.btn-dark{background:var(--tinta);color:#fff}
+.btn-dark:hover{background:#1c3656}
+.btn-ghost{background:#fff;border-color:var(--linea);color:var(--acero)}
+.btn-ghost:hover{border-color:var(--acero-claro);background:#F7FAFC}
+.btn-ok{background:var(--forjado);color:#fff}
+.btn-ok:hover{background:#0b6457}
+.btn-word{background:#2B579A;color:#fff}
+.btn-word:hover{background:#1e3f7a}
+.btn-sm{padding:7px 12px;font-size:13.5px;border-radius:9px}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:#fff;border:1.5px solid var(--linea);border-radius:999px;padding:7px 13px;font-size:13.5px;color:var(--acero);cursor:pointer;display:inline-flex;align-items:center;gap:6px;line-height:1.25;text-align:left}
+.chip:hover{border-color:var(--brasa);color:var(--brasa)}
+.chip[aria-pressed="true"]{background:var(--tinta);border-color:var(--tinta);color:#fff}
+.chip.mini-ex{font-size:12.5px;padding:4px 10px;border-style:dashed}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{border:1.5px solid var(--linea);background:#fff;border-radius:9px;padding:7px 11px;font-size:13.5px;font-weight:600;color:var(--acero)}
+.seg button:hover{border-color:var(--acero-claro)}
+.seg button[aria-pressed="true"]{background:var(--tinta);border-color:var(--tinta);color:#fff}
+
+.meto{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.meto button{text-align:left;background:#fff;border:1.5px solid var(--linea);border-radius:12px;padding:10px 12px;color:var(--tinta)}
+.meto button b{display:block;font-size:14px}
+.meto button span{display:block;font-size:12.3px;color:var(--gris);line-height:1.35;margin-top:2px}
+.meto button:hover{border-color:var(--acero-claro)}
+.meto button[aria-pressed="true"]{border-color:var(--tinta);box-shadow:0 0 0 2px var(--tinta);background:var(--papel)}
+
+.tip{display:flex;gap:12px;background:#FFF8E6;border:1px solid #F3DDA0;border-radius:12px;padding:13px 15px;font-size:14px;color:#6B4E00;margin-bottom:18px}
+.tip svg{width:22px;height:22px;color:#C98200;flex:none;margin-top:1px}
+.tip strong{color:#523B00}
+.aviso{background:var(--brasa-suave);border:1px solid #F3C7B5;border-radius:12px;padding:13px 15px;font-size:14px;color:var(--aviso);margin-bottom:16px}
+.okbox{background:var(--forjado-suave);border:1px solid #A9DCCF;border-radius:12px;padding:13px 15px;font-size:14px;color:#0B5A4E;margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+
+/* Inicio */
+.hero{background:var(--tinta);color:#EAF1F7;border-radius:22px;padding:40px 36px;position:relative;overflow:hidden;margin-bottom:26px;box-shadow:var(--sombra-alta)}
+.hero::before{content:"";position:absolute;right:-80px;top:-80px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(228,87,46,.55),transparent 65%)}
+.hero::after{content:"";position:absolute;left:30%;bottom:-140px;width:420px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(14,140,122,.35),transparent 65%)}
+.hero>*{position:relative;z-index:1}
+@media(max-width:600px){.hero{padding:28px 20px;border-radius:18px}}
+.eyebrow{font:600 11.5px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:#8FA7BE;margin:0 0 14px}
+.hero h1{font-family:var(--display);font-weight:800;font-size:clamp(34px,5.4vw,58px);line-height:.98;letter-spacing:-.035em;margin:0 0 16px;max-width:17ch}
+.hero h1 em{font-style:normal;color:var(--brasa)}
+.hero p.lede{max-width:62ch;font-size:18px;color:#C3D3E2;margin:0 0 24px}
+.hero .actions .btn-ghost{background:transparent;color:#fff;border-color:#4A6787}
+.hero .actions .btn-ghost:hover{border-color:#fff}
+.draft{margin-top:18px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:12px 14px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:14.5px}
+.sec-title{font-family:var(--display);font-weight:800;font-size:24px;letter-spacing:-.02em;margin:34px 0 6px}
+.sec-sub{color:var(--gris);margin:0 0 16px}
+.journey{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.jstop{background:#fff;border:1px solid var(--linea);border-radius:14px;padding:16px;position:relative}
+.jstop .ji{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:#fff;background:var(--c);margin-bottom:10px}
+.jstop .ji svg{width:20px;height:20px}
+.jstop b{display:block;font-size:15px;margin-bottom:2px}
+.jstop span{display:block;font-size:13px;color:var(--gris);line-height:1.45}
+.jstop .jn{position:absolute;top:12px;right:14px;font:700 12px var(--mono);color:var(--acero-claro)}
+@media(max-width:900px){.journey{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.journey{grid-template-columns:1fr}}
+
+.parts{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.part{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--linea);border-radius:12px;padding:12px 14px}
+.part .pi{width:34px;height:34px;border-radius:10px;background:color-mix(in srgb,var(--c) 14%,#fff);color:var(--c);display:grid;place-items:center;flex:none}
+.part b{display:block;font-size:14.5px}
+.part span{display:block;font-size:12.8px;color:var(--gris);line-height:1.4}
+
+.examples{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.excard{background:#fff;border:1px solid var(--linea);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--sombra);position:relative;overflow:hidden;text-align:left;font:inherit;color:inherit;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.excard:hover{transform:translateY(-3px);box-shadow:var(--sombra-alta)}
+.excard::before{content:"";position:absolute;left:0;top:0;right:0;height:5px;background:var(--c)}
+.excard .emo{font-size:32px;line-height:1}
+.excard .area{font:700 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--acero-claro)}
+.excard b{font-family:var(--display);font-size:18px;letter-spacing:-.01em;line-height:1.15}
+.excard p{margin:0;font-size:13.5px;color:var(--gris);flex:1}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--c);background:color-mix(in srgb,var(--c) 12%,#fff);border-radius:999px;padding:3px 9px;align-self:flex-start}
+
+/* Clave */
+.keyrow{display:flex;gap:8px}
+.keyrow input{flex:1;font-family:var(--mono);font-size:14px}
+.eye{width:46px;flex:none;border:1.5px solid var(--linea);background:#fff;border-radius:10px;color:var(--acero);display:grid;place-items:center}
+.light{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;background:var(--papel);margin-top:14px;font-size:14.5px;font-weight:600}
+.light .bulbo{width:14px;height:14px;border-radius:50%;background:#B8C5D3;box-shadow:0 0 0 4px rgba(184,197,211,.3);flex:none}
+.light[data-s="ok"] .bulbo{background:#16A34A;box-shadow:0 0 0 4px rgba(22,163,74,.22)}
+.light[data-s="err"] .bulbo{background:var(--brasa);box-shadow:0 0 0 4px rgba(228,87,46,.22)}
+.light[data-s="wait"] .bulbo{background:#F59E0B;box-shadow:0 0 0 4px rgba(245,158,11,.25)}
+.olsteps{list-style:none;padding:0;margin:0;counter-reset:o;display:flex;flex-direction:column;gap:12px}
+.olsteps li{counter-increment:o;display:flex;gap:12px;font-size:14.5px;align-items:flex-start}
+.olsteps li::before{content:counter(o);width:28px;height:28px;border-radius:50%;background:var(--brasa-suave);color:var(--brasa);font:700 13px var(--mono);display:grid;place-items:center;flex:none}
+
+/* Acordeones */
+.acc{background:#fff;border:1px solid var(--linea);border-radius:var(--r);margin-bottom:12px;box-shadow:var(--sombra);overflow:hidden}
+.acc>summary{list-style:none;cursor:pointer;padding:15px 18px;display:flex;align-items:center;gap:12px}
+.acc>summary::-webkit-details-marker{display:none}
+.acc>summary .ai{width:36px;height:36px;border-radius:10px;background:var(--papel);color:var(--acero);display:grid;place-items:center;flex:none}
+.acc[open]>summary .ai{background:var(--tinta);color:#fff}
+.acc>summary b{font-family:var(--display);font-size:17px;display:block}
+.acc>summary small{display:block;color:var(--gris);font-size:13px}
+.acc>summary .chev{margin-left:auto;transition:transform .2s;color:var(--acero-claro)}
+.acc[open]>summary .chev{transform:rotate(180deg)}
+.acc .inner{padding:4px 18px 18px;border-top:1px solid var(--linea-2)}
+.acc .inner>*:first-child{margin-top:14px}
+.prompt-ta{font-family:var(--mono);font-size:12.3px;min-height:130px;background:#FBFDFE}
+
+/* Resumen lateral */
+.sum h3{margin-bottom:10px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.stat{background:var(--papel);border-radius:12px;padding:10px 12px}
+.stat b{display:block;font:800 24px var(--display);letter-spacing:-.02em;line-height:1.1}
+.stat span{font-size:12.3px;color:var(--gris)}
+.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.checks li{display:flex;gap:9px;align-items:center;color:var(--gris)}
+.checks li .ck{width:20px;height:20px;border-radius:50%;border:2px solid var(--linea);display:grid;place-items:center;flex:none}
+.checks li.on{color:var(--tinta)}
+.checks li.on .ck{background:var(--forjado);border-color:var(--forjado);color:#fff}
+.checks li .ck svg{width:12px;height:12px}
+.docname{margin-top:14px;padding:11px 13px;border-radius:11px;background:var(--tinta);color:#C3D3E2;font-size:13.5px}
+.docname b{color:#fff}
+
+/* Generación */
+.agents{display:flex;flex-direction:column;gap:10px}
+.agent{background:#fff;border:1px solid var(--linea);border-radius:var(--r);box-shadow:var(--sombra);overflow:hidden;transition:border-color .2s}
+.agent-h{display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer}
+.agent .ai{width:42px;height:42px;border-radius:12px;background:color-mix(in srgb,var(--c) 14%,#fff);color:var(--c);display:grid;place-items:center;flex:none;transition:all .2s}
+.agent .ai svg{width:20px;height:20px}
+.agent-t{flex:1;min-width:0}
+.agent-t b{display:block;font-family:var(--display);font-size:16.5px}
+.agent-t span{display:block;font-size:13px;color:var(--gris)}
+.pill{font-size:12.5px;font-weight:700;border-radius:999px;padding:4px 10px;background:var(--linea-2);color:var(--gris);white-space:nowrap}
+.agent[data-s="run"]{border-color:#F59E0B}
+.agent[data-s="run"] .ai{background:var(--c);color:#fff;animation:pulse 1s infinite alternate}
+.agent[data-s="run"] .pill{background:#FFF1D6;color:#8A5A00}
+.agent[data-s="ok"] .ai{background:var(--c);color:#fff}
+.agent[data-s="ok"] .pill{background:var(--forjado-suave);color:var(--forjado)}
+.agent[data-s="err"]{border-color:var(--brasa)}
+.agent[data-s="err"] .pill{background:var(--brasa-suave);color:var(--brasa)}
+.agent-b{display:none;padding:4px 18px 16px 72px;font-size:14px;border-top:1px solid var(--linea-2);background:#FBFDFE}
+.agent.open .agent-b{display:block}
+@media(max-width:600px){.agent-b{padding-left:18px}}
+@keyframes pulse{from{transform:scale(1);box-shadow:0 0 0 0 rgba(228,87,46,.5)}to{transform:scale(1.06);box-shadow:0 0 0 10px rgba(228,87,46,0)}}
+.forging{display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:14px;background:var(--tinta);color:#fff;margin-bottom:16px}
+.forging .spark{width:44px;height:44px;border-radius:12px;background:var(--brasa);display:grid;place-items:center;flex:none;animation:pulse 1s infinite alternate}
+.forging.done .spark{background:var(--forjado);animation:none}
+.forging.err .spark{animation:none}
+.forging b{font-family:var(--display);font-size:18px;display:block}
+.forging span{font-size:14px;color:#C3D3E2}
+.mini-list{margin:10px 0 0;padding:0;list-style:none}
+.mini-list li{padding:5px 0;border-bottom:1px solid var(--linea-2)}
+.mini-list li:last-child{border-bottom:0}
+.code{display:inline-block;font:700 11px var(--mono);border-radius:5px;padding:1px 6px;margin-right:6px;background:var(--linea-2);color:var(--acero)}
+
+/* Guía */
+.res-head{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+.res-head h2{font-family:var(--display);font-weight:800;font-size:clamp(24px,3vw,32px);letter-spacing:-.02em;margin:0;flex:1;min-width:240px;line-height:1.1}
+.doc{background:#fff;border:1px solid var(--linea);border-radius:18px;box-shadow:var(--sombra-alta);padding:40px 44px;max-width:900px;margin:0 auto}
+@media(max-width:700px){.doc{padding:22px 16px}}
+.doc-h{border-bottom:3px solid var(--tinta);padding-bottom:18px;margin-bottom:26px}
+.doc-kind{font:600 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--brasa);margin:0 0 6px}
+.doc-h h1{font-family:var(--display);font-weight:800;font-size:clamp(26px,3.4vw,36px);letter-spacing:-.025em;line-height:1.05;margin:0 0 12px}
+.meta{display:flex;flex-wrap:wrap;gap:6px}
+.meta span{font-size:12.8px;font-weight:600;background:var(--papel);color:var(--acero);border-radius:999px;padding:4px 11px}
+.dsec{margin-bottom:28px}
+.dsec h2{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.01em;margin:0 0 10px;display:flex;align-items:center;gap:10px}
+.dsec h2 .num{width:28px;height:28px;border-radius:8px;background:var(--tinta);color:#fff;font:700 13px var(--mono);display:grid;place-items:center;flex:none}
+.dsec p{margin:0 0 10px;max-width:75ch}
+.sublab{font-size:13px;font-weight:700;color:var(--acero-claro);margin:14px 0 6px}
+.row{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--linea-2);font-size:14.5px;align-items:flex-start}
+.row:last-child{border-bottom:0}
+.row .code{margin-top:2px;flex:none}
+.code.cg{background:#E6F0FA;color:var(--c-ctx)}
+.code.ce{background:#EEEAFB;color:var(--c-comp)}
+.code.bl{background:var(--forjado-suave);color:var(--forjado)}
+.code.tm{background:var(--tinta);color:#fff}
+.row .hrs{margin-left:auto;font-size:12.5px;color:var(--gris);white-space:nowrap}
+.blk{font-weight:700;margin:16px 0 4px;display:flex;gap:8px;align-items:baseline}
+.blk small{font-weight:500;color:var(--gris)}
+.tbl-wrap{overflow-x:auto}
+table.t{width:100%;border-collapse:collapse;font-size:14px}
+table.t th{background:var(--tinta);color:#fff;text-align:left;padding:9px 11px;font-size:12.5px;font-weight:700}
+table.t td{padding:9px 11px;border-bottom:1px solid var(--linea-2);vertical-align:top}
+table.t tr:nth-child(even) td{background:#FAFCFE}
+.peso{font-weight:800;color:var(--brasa);white-space:nowrap}
+.note{margin-top:12px;padding:11px 14px;background:var(--papel);border-left:4px solid var(--forjado);border-radius:8px;font-size:14px}
+.demo-flag{background:#FFF8E6;border:1px solid #F3DDA0;color:#6B4E00;border-radius:12px;padding:11px 15px;font-size:14px;margin:0 auto 16px;max-width:900px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.demo-flag svg{color:#C98200}
+
+/* Navegación inferior */
+.bottomnav{position:fixed;left:0;right:0;bottom:0;z-index:35;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--linea)}
+.bn-in{max-width:1180px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:12px}
+.bn-hint{flex:1;text-align:center;font-size:14px;color:var(--gris)}
+.bn-hint b{color:var(--tinta)}
+@media(max-width:600px){.bn-hint{display:none}.bn-in{justify-content:space-between}}
+
+/* Modal */
+.modal{position:fixed;inset:0;z-index:60;background:rgba(15,34,55,.55);display:none;align-items:flex-start;justify-content:center;padding:6vh 16px;overflow:auto}
+.modal.on{display:flex}
+.modal-box{background:#fff;border-radius:18px;max-width:760px;width:100%;box-shadow:var(--sombra-alta);overflow:hidden}
+.modal-head{display:flex;align-items:center;gap:12px;padding:16px 20px;background:var(--tinta);color:#fff}
+.modal-head h2{font-family:var(--display);font-size:22px;margin:0;flex:1}
+.modal-head button{background:transparent;border:1px solid #4A6787;color:#fff;border-radius:9px;padding:6px 10px}
+.modal-body{padding:18px 20px 22px}
+.glos{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:600px){.glos{grid-template-columns:1fr}}
+.glos div{background:var(--papel);border-radius:12px;padding:12px 14px}
+.glos b{display:block;font-family:var(--display);font-size:16px;margin-bottom:2px}
+.glos span{font-size:13.8px;color:var(--acero)}
+.hist{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--linea);border-radius:12px;margin-bottom:8px}
+.hist-t{flex:1;min-width:0;cursor:pointer}
+.hist-t b{display:block;font-size:15px}
+.hist-t span{font-size:12.8px;color:var(--gris)}
+.hist:hover{border-color:var(--acero-claro)}
+.iconbtn{width:34px;height:34px;border-radius:9px;border:1.5px solid var(--linea);background:#fff;color:var(--acero);display:grid;place-items:center;padding:0}
+.iconbtn:hover{border-color:var(--brasa);color:var(--brasa)}
+.empty{text-align:center;color:var(--gris);padding:30px 10px}
+
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);background:var(--tinta);color:#fff;padding:11px 18px;border-radius:12px;font-size:14.5px;font-weight:600;opacity:0;pointer-events:none;transition:all .25s;z-index:70;max-width:90vw;text-align:center;box-shadow:var(--sombra-alta)}
+.toast.on{opacity:1;transform:translateX(-50%)}
+footer{max-width:1180px;margin:0 auto;padding:0 16px 30px;font-size:13px;color:#6E8299}
+footer hr{border:0;border-top:1px solid var(--linea);margin:0 0 14px}
+
+@media print{
+  body{background:#fff;padding:0}
+  .topbar,.bottomnav,.res-head,.demo-flag,.okbox,footer,.toast,.modal{display:none!important}
+  main{padding:0;max-width:none}
+  .screen{display:none!important}
+  
+  .doc{box-shadow:none;border:0;padding:0;max-width:none}
+  .dsec{break-inside:avoid-page}
+  table.t th{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+/* ══ v2 ══ */
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:640px){.grid3{grid-template-columns:1fr}}
+.feats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:960px){.feats{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.feats{grid-template-columns:1fr}}
+.feat{background:#fff;border:1px solid var(--linea);border-radius:14px;padding:16px;border-top:4px solid var(--c)}
+.feat .pi{width:38px;height:38px;border-radius:11px;background:color-mix(in srgb,var(--c) 14%,#fff);color:var(--c);display:grid;place-items:center;margin-bottom:10px}
+.feat b{display:block;font-family:var(--display);font-size:17px;margin-bottom:3px}
+.feat span{display:block;font-size:13.5px;color:var(--gris);line-height:1.45}
+.importbar{display:flex;gap:14px;align-items:center;flex-wrap:wrap;background:var(--tinta);color:#EAF1F7;border-radius:var(--r);padding:14px 16px;margin-bottom:18px}
+.importbar .pi{width:40px;height:40px;border-radius:11px;background:var(--brasa);display:grid;place-items:center;flex:none}
+.importbar b{display:block;font-size:15px}
+.importbar span{display:block;font-size:13.3px;color:#A9C0D4}
+.importbar .btn-dark{background:#fff;color:var(--tinta)}
+.importbar .btn-dark:hover{background:#EAF1F7}
+.inacc{border-top:1px solid var(--linea-2);margin-top:4px;padding-top:12px}
+.inacc>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--acero)}
+.inacc>summary::-webkit-details-marker{display:none}
+.inacc>summary .chev{margin-left:auto;transition:transform .2s;color:var(--acero-claro)}
+.inacc[open]>summary .chev{transform:rotate(180deg)}
+.rec{display:inline-block;font:700 11px var(--texto);background:var(--forjado-suave);color:var(--forjado);border-radius:999px;padding:2px 8px;vertical-align:2px;margin-left:4px}
+.checkgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:560px){.checkgrid{grid-template-columns:1fr}}
+.checkgrid label{display:flex;gap:9px;align-items:center;margin:0;padding:9px 11px;border-radius:10px;background:var(--papel);font-weight:500;color:var(--tinta);cursor:pointer;font-size:14px}
+.checkgrid input{width:18px;height:18px;accent-color:var(--forjado);margin:0}
+.checkgrid label:has(input:checked){background:var(--forjado-suave)}
+.drop{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;border:2px dashed var(--linea);border-radius:14px;padding:24px;cursor:pointer;color:var(--acero);margin:0;font-weight:500}
+.drop svg{width:30px;height:30px;color:var(--brasa)}
+.drop b{font-size:15px;color:var(--tinta)}
+.drop span{font-size:13px;color:var(--gris)}
+.drop.over,.drop:hover{border-color:var(--brasa);background:var(--brasa-suave)}
+
+
+
+/* ══ Publication Radar ══ */
+.chips-ej{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.chips-ej button{border:1.5px solid var(--linea);background:#fff;border-radius:999px;padding:6px 14px;font-size:13.5px;color:var(--acero)}
+.chips-ej button:hover{border-color:var(--acero-claro)}
+#tema{font-size:18px;padding:14px 16px}
+.jr{display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;background:#fff;border:1.5px solid var(--linea);border-radius:12px;padding:10px 14px;margin-bottom:8px;cursor:pointer}
+.jr.on{border-color:var(--forjado);background:#F4FBF8}
+.jr input{width:18px;height:18px}
+.jr b{font-size:14.5px}.jr small{display:block;color:var(--gris);font-size:12.5px}
+.jr .bar{width:120px;height:8px;background:var(--linea-2);border-radius:5px;overflow:hidden}.jr .bar i{display:block;height:100%;background:var(--acero-claro)}
+.jr .n{font:800 13px var(--mono);color:var(--acero);text-align:right}
+.tag{font-size:11px;font-weight:800;border-radius:999px;padding:2px 8px;margin-left:6px}
+.tag.oa{background:var(--forjado-suave);color:var(--forjado)}.tag.pm{background:#E4F0FB;color:#1F6FB2}.tag.nuevo{background:var(--brasa);color:#fff}.tag.ia{background:#EEEAFB;color:#6B4FD8}.tag.man{background:var(--linea-2);color:var(--acero)}
+.filtros{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.filtros button{border:1.5px solid var(--linea);background:#fff;border-radius:999px;padding:6px 14px;font-weight:700;font-size:13px;color:var(--acero)}
+.filtros button[aria-pressed="true"]{background:var(--tinta);border-color:var(--tinta);color:#fff}
+.filtros input{flex:1;min-width:180px;padding:8px 12px;border:1.5px solid var(--linea);border-radius:999px;font-size:14px}
+.paper{background:#fff;border:1px solid var(--linea);border-left:4px solid var(--brasa);border-radius:14px;padding:12px 16px;margin-bottom:10px;box-shadow:var(--sombra)}
+.paper.visto{border-left-color:var(--linea);opacity:.72;box-shadow:none}
+.paper .t{font-size:15.5px;font-weight:700;color:var(--tinta);text-decoration:none;line-height:1.35}.paper .t:hover{text-decoration:underline}
+.paper .m{font-size:12.8px;color:var(--gris);margin:4px 0}.paper .m b{color:var(--acero)}
+.paper .abs{font-size:14px;line-height:1.6;color:var(--acero);display:none;margin-top:6px}.paper .abs.on{display:block}
+.paper .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.digest{white-space:pre-wrap;font-size:14.5px;line-height:1.65}
+.radar{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--linea-2)}
+.radar b{font-size:14.5px}.radar small{display:block;color:var(--gris)}
+
+/* ══ AntiConvocatorIA ══ */
+/* ocho pasos: solo se muestra la etiqueta del paso actual */
+.tb-tools{flex:none}
+.stepper{overflow:hidden}
+.sdot .lbl{display:none}.sdot[data-state="now"] .lbl{display:inline}
+.stepper{justify-content:center;min-width:0}
+@media(max-width:720px){.sdot[data-state="now"] .lbl{display:none}.sline{flex:1 1 4px;min-width:2px}.sdot{padding:4px 2px}.sdot .n{width:26px;height:26px}}
+
+:root{--teal:#0E7C6B;--sello:#E4572E}
+.idea{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:960px){.idea{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.idea{grid-template-columns:1fr}}
+.idea div{background:#fff;border:1px solid var(--linea);border-radius:14px;padding:16px}
+.idea b{display:block;font-family:var(--display);font-size:17px;margin-bottom:4px}
+.idea span{font-size:13.8px;color:var(--gris);line-height:1.5;display:block}
+.idea .k{font:700 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--brasa);margin-bottom:8px}
+.idea div.yes{border-color:#A9DCCF;background:var(--forjado-suave)}
+.idea div.yes .k{color:var(--forjado)}
+.quote{margin:22px 0 0;font-family:var(--display);font-size:clamp(20px,2.6vw,28px);font-weight:700;letter-spacing:-.02em;color:#fff}
+.quote span{color:var(--brasa)}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:0 0 16px}
+.metric{background:#fff;border:1px solid var(--linea);border-radius:14px;padding:14px 16px;box-shadow:var(--sombra)}
+.metric-v{font:800 34px var(--display);letter-spacing:-.03em;line-height:1.05;color:var(--tinta)}
+.metric-v.good{color:var(--forjado)} .metric-v.warn{color:var(--brasa)} .metric-v.mid{color:#B7791F}
+.metric-l{font-weight:700;font-size:14px;margin-top:4px}
+.metric-n{font-size:12.8px;color:var(--gris);margin-top:4px;line-height:1.45}
+.substeps{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.substeps span{font-size:12.5px;font-weight:600;border-radius:999px;padding:5px 11px;background:var(--linea-2);color:var(--gris)}
+.substeps span.on{background:#FFF1D6;color:#8A5A00}
+.substeps span.done{background:var(--forjado-suave);color:var(--forjado)}
+.substeps span.fail{background:var(--brasa-suave);color:var(--brasa)}
+.spin{display:inline-block;width:12px;height:12px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-1px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.heat{border-collapse:separate;border-spacing:3px;font-size:13px;width:100%}
+.heat th{font-size:11.5px;color:var(--gris);font-weight:700;text-align:center;padding:4px;white-space:nowrap}
+.heat th.l,.heat td.l{text-align:left}
+.heat td{text-align:center;border-radius:6px;padding:7px 4px;min-width:34px}
+.heat td.l{padding:6px 8px 6px 0;min-width:170px;font-weight:600}
+.heat td.c0{background:#F3F6FA;color:#B8C5D3}
+.heat td.p{font-weight:800}
+.aband{display:flex;flex-direction:column;gap:6px}
+.aband-row{display:grid;grid-template-columns:minmax(140px,1.2fr) 2fr minmax(150px,1fr);gap:10px;align-items:center;font-size:13.5px}
+.aband-bar{height:10px;background:var(--linea-2);border-radius:6px;overflow:hidden}
+.aband-fill{height:100%;background:var(--brasa);border-radius:6px}
+.aband-n{color:var(--gris);font-size:12.5px}
+@media(max-width:600px){.aband-row{grid-template-columns:1fr}}
+.conv{background:#FBFDFE;border:1.5px solid var(--linea);border-radius:12px;margin-bottom:8px}
+.conv>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:10px 12px;flex-wrap:wrap}
+.conv>summary::-webkit-details-marker{display:none}
+.conv-year{font:700 13px var(--mono);background:var(--tinta);color:#fff;border-radius:7px;padding:3px 9px}
+.conv-meta{font-size:13px;color:var(--gris);flex:1}
+.conv-src{font-size:12px;color:var(--acero-claro);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.conv-body{padding:4px 12px 12px}
+.ing{margin-top:10px;display:flex;flex-direction:column;gap:4px}
+.ing div{display:flex;gap:10px;font-size:13px;justify-content:space-between;padding:6px 10px;background:var(--papel);border-radius:8px}
+.ing .ok{color:var(--forjado);font-weight:600}.ing .err{color:var(--brasa);font-weight:600}.ing .warn{color:#B7791F;font-weight:600}
+.bp-scroll{overflow-x:auto}
+table.bp{border-collapse:separate;border-spacing:3px;width:100%;font-size:13.5px}
+table.bp th{font-size:12px;color:var(--gris);font-weight:700;padding:4px;text-align:center;white-space:nowrap}
+table.bp th.l{text-align:left}
+table.bp td.tema{font-weight:600;padding-right:8px;min-width:180px}
+table.bp td.cell{padding:0;min-width:64px}
+.bp-in{position:relative;border-radius:8px;display:flex;align-items:center;justify-content:center;height:40px}
+.bp-in input{width:48px;border:0;background:transparent;text-align:center;font:700 14px var(--texto);color:var(--tinta);padding:6px 0}
+.bp-in input:focus{box-shadow:none;background:rgba(255,255,255,.7);border-radius:6px}
+.bp-in.dark input{color:#fff}
+.bp-in.sel{outline:2.5px solid var(--brasa);outline-offset:-2px}
+.bp-hits{position:absolute;top:-7px;right:-5px;background:var(--brasa);color:#fff;border-radius:999px;font:700 10.5px var(--texto);padding:1px 6px}
+.bp-peso{width:64px!important;padding:8px!important;text-align:center;font-weight:700}
+.deuda{display:inline-block;height:8px;border-radius:4px;background:var(--brasa);vertical-align:1px;margin-right:8px}
+.deuda-0{background:var(--linea)}
+.rowsum{font-size:11.5px;color:var(--gris);text-align:center}
+.rowsum.bad{color:var(--brasa);font-weight:700}
+.legend{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:12.5px;color:var(--gris);margin-top:10px}
+.legend-bar{width:90px;height:8px;border-radius:4px;background:linear-gradient(90deg,rgba(14,124,107,.05),rgba(14,124,107,.8))}
+.acta{background:var(--tinta);color:#EAF1F7;border-radius:18px;padding:22px;margin-bottom:16px;box-shadow:var(--sombra-alta);position:relative;overflow:hidden}
+.acta::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(228,87,46,.35),transparent 65%)}
+.acta>*{position:relative;z-index:1}
+.acta h3{font-family:var(--display);font-size:22px;margin:0}
+.acta .sub{font-size:13px;color:#A9C0D4;margin:2px 0 14px}
+.acta dl{display:grid;grid-template-columns:150px 1fr;gap:6px 14px;margin:0;font-size:14px}
+.acta dt{color:#8FA7BE;font-weight:600}
+.acta dd{margin:0;word-break:break-all}
+.acta code{background:#1B3350;color:#9FE3D4;font-size:12.5px}
+@media(max-width:600px){.acta dl{grid-template-columns:1fr}}
+.intentos{margin-top:16px;display:flex;flex-direction:column;gap:6px}
+.intento{display:grid;grid-template-columns:78px 1fr 52px;gap:10px;align-items:center;font-size:12.5px}
+.intento .track{position:relative;height:10px;background:#1E3550;border-radius:6px}
+.intento .fill{position:absolute;left:0;top:0;bottom:0;border-radius:6px}
+.intento .lim{position:absolute;top:-4px;bottom:-4px;width:2px;background:#F5BF4F}
+.intento .exp{position:absolute;top:-4px;bottom:-4px;width:2px;background:#8FA7BE}
+.intento .v{text-align:right;font-weight:700}
+.tagx{display:inline-block;font-size:11.5px;font-weight:700;border-radius:999px;padding:2px 8px;background:var(--linea-2);color:var(--acero);margin:1px 2px}
+.tagx.t{background:var(--forjado-suave);color:var(--forjado)}
+.tagx.a{background:var(--brasa-suave);color:var(--brasa)}
+.paper{background:#fff;border:1px solid var(--linea);border-radius:18px;box-shadow:var(--sombra-alta);padding:34px 38px;max-width:880px;margin:0 auto}
+@media(max-width:700px){.paper{padding:20px 16px}}
+.paper-head{border-bottom:3px solid var(--tinta);padding-bottom:14px;margin-bottom:16px}
+.paper-head h3{font-family:var(--display);font-size:28px;margin:0 0 4px;letter-spacing:-.02em}
+.paper-head .pm{font-size:13.5px;color:var(--gris)}
+.q{padding:14px 0;border-bottom:1px solid var(--linea-2)}
+.q:last-child{border-bottom:0}
+.q-top{display:flex;gap:10px}
+.q-n{font:800 16px var(--display);flex:none;min-width:24px}
+.q-text{white-space:pre-wrap;flex:1}
+.q-pts{flex:none;font-size:12.5px;color:var(--gris);white-space:nowrap}
+.opts{margin:8px 0 0 34px;display:flex;flex-direction:column;gap:4px;font-size:14.5px}
+.opts .ok{color:var(--forjado);font-weight:700}
+.q-meta{margin:10px 0 0 34px}
+.variantes{margin:10px 0 0 34px;background:var(--papel);border-radius:10px;padding:10px 12px;font-size:13.5px}
+.variantes .vt{font-weight:700;color:var(--acero);margin-bottom:4px;font-size:12.5px}
+.variantes .vi{padding:5px 0;border-top:1px dashed var(--linea)}
+.variantes .vi:first-of-type{border-top:0}
+.crit{margin:8px 0 0 34px;font-size:13.5px;border-left:3px solid var(--forjado);padding:6px 10px;background:var(--forjado-suave);border-radius:0 8px 8px 0}
+.carta{background:#fff;border:1px solid var(--linea);border-radius:18px;box-shadow:var(--sombra-alta);padding:34px 40px;max-width:760px;margin:0 auto;font-size:16.5px;line-height:1.65}
+.carta p{margin:0 0 14px}
+@media(max-width:700px){.carta{padding:22px 18px}}
+.pubbox{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;justify-content:center}
+.stale{background:#FFF8E6;border:1px solid #F3DDA0;color:#6B4E00;border-radius:12px;padding:11px 15px;font-size:14px;margin-bottom:14px}
+.verify-ok{background:var(--forjado-suave);color:#0B5A4E;border-radius:12px;padding:12px 14px;font-weight:600}
+.verify-ko{background:var(--brasa-suave);color:var(--aviso);border-radius:12px;padding:12px 14px;font-weight:600}
+.keyhide{font-family:var(--mono);letter-spacing:.1em}
+@media print{
+  .noprint,.acta .intentos{display:none!important}
+  .screen.on{display:block!important}
+  .paper,.carta{box-shadow:none;border:0;padding:0}
+}
+</style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>Publication Radar</h1>
-      <p>Cualquier temática · revistas reales (OpenAlex + PubMed) · historial local</p>
-    </header>
+<svg style="display:none" aria-hidden="true">
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m10 8 6 4-6 4z"/></symbol>
+  <symbol id="i-rocket" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></symbol>
+  <symbol id="i-quiz" viewBox="0 0 24 24"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8M13 12h8M13 18h8"/></symbol>
+  <symbol id="i-cards" viewBox="0 0 24 24"><rect x="8" y="8" width="14" height="14" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></symbol>
+  <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6M10 22h4"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></symbol>
+  <symbol id="i-github" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></symbol>
+  <symbol id="i-archive" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="5" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8M10 12h4"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></symbol>
+  <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4M17 5h4M5 17v4M3 19h4"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></symbol>
+  <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></symbol>
+  <symbol id="i-form" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+  <symbol id="i-tablet" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M12 18h.01"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M12 18h.01"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></symbol>
+  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M6 14l1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M9 7h7M9 11h5"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="i-print" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+  <symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 3v18M7 21h10M5 7h14M5 7l-3 7a3 3 0 0 0 6 0zM19 7l-3 7a3 3 0 0 0 6 0z"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></symbol>
+</svg>
 
-    <div class="card">
-      <h2>🔑 Claves API</h2>
-      <p style="font-size:0.83rem;color:var(--muted);margin-bottom:0.7rem;">
-        OpenAI es obligatoria. OpenAlex y PubMed funcionan sin clave (recomendado añadirlas para más cuota).
-      </p>
-      <div class="row" style="margin-bottom:0.6rem">
-        <div style="flex:3">
-          <label for="openaiKey">OpenAI API Key (obligatoria)</label>
-          <input type="password" id="openaiKey" placeholder="sk-..." autocomplete="off" />
-        </div>
-        <div style="flex:1;align-self:flex-end">
-          <button class="btn-primary" id="saveOpenaiBtn" style="width:100%">Guardar</button>
-        </div>
-      </div>
-      <div class="row">
-        <div>
-          <label for="openalexKey">OpenAlex API Key (opcional, gratis)</label>
-          <input type="password" id="openalexKey" placeholder="Dejar vacío si no tienes" autocomplete="off" />
-        </div>
-        <div>
-          <label for="pubmedEmail">Email para PubMed (recomendado)</label>
-          <input type="email" id="pubmedEmail" placeholder="tu@email.com" />
-        </div>
-        <div style="align-self:flex-end">
-          <button class="btn-secondary" id="saveExtraBtn" style="width:100%">Guardar extras</button>
-        </div>
-      </div>
-      <div id="keyStatus" style="margin-top:0.55rem;font-size:0.83rem;"></div>
-    </div>
-
-    <div class="card">
-      <h2>🎯 Temática</h2>
-      <p style="font-size:0.83rem;color:var(--muted);margin-bottom:0.7rem;">
-        Escribe la temática y la app buscará revistas relevantes en OpenAlex + PubMed y generará/recuperará papers.
-      </p>
-      <div class="row">
-        <div style="flex:3">
-          <label for="topicInput">Temática / área de interés</label>
-          <input type="text" id="topicInput" placeholder="Ej: cardiology, AI in radiology, nursing education, climate change..." />
-        </div>
-        <div style="flex:1;align-self:flex-end">
-          <button class="btn-primary" id="searchTopicBtn" style="width:100%">
-            <span id="searchLabel">Buscar revistas</span>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="card" id="journalsCard" style="display:none">
-      <h2>📚 Revistas encontradas <span id="journalsCount" class="badge">0</span></h2>
-      <p style="font-size:0.83rem;color:var(--muted);margin-bottom:0.5rem;">
-        Selecciona las que quieras seguir. Fuentes: OpenAlex, PubMed y GPT.
-      </p>
-      <div class="journals-grid" id="journalsGrid"></div>
-      <div style="display:flex;gap:0.55rem;flex-wrap:wrap;margin-top:0.6rem">
-        <button class="btn-primary" id="saveJournalsBtn">Guardar selección</button>
-        <button class="btn-secondary btn-sm" id="selectAllBtn">Todas</button>
-        <button class="btn-secondary btn-sm" id="deselectAllBtn">Ninguna</button>
-        <button class="btn-secondary btn-sm" id="addCustomBtn">+ Añadir manual</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="toolbar">
-        <button class="btn-primary" id="generateBtn" disabled>
-          <span id="generateLabel">📄 Obtener papers</span>
-        </button>
-        <button class="btn-secondary" id="forceBtn" disabled>Forzar nueva búsqueda</button>
-        <div class="filters" id="filters">
-          <button data-filter="all" class="active">Todos</button>
-          <button data-filter="unseen">No vistos <span class="badge" id="unseenCount">0</span></button>
-          <button data-filter="seen">Vistos</button>
-        </div>
-      </div>
-      <div id="alertBox"></div>
-      <div id="papersList">
-        <div class="empty">
-          1. Guarda tu API Key de OpenAI<br>
-          2. Escribe una temática y pulsa “Buscar revistas”<br>
-          3. Selecciona revistas y pulsa “Obtener papers”
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>⚙️ Datos locales</h2>
-      <div style="display:flex;gap:0.55rem;flex-wrap:wrap">
-        <button class="btn-secondary btn-sm" id="clearSeenBtn">Limpiar vistos</button>
-        <button class="btn-danger btn-sm" id="resetAllBtn">Resetear todo</button>
-      </div>
-      <p class="footer-note" style="text-align:left;margin-top:0.9rem">
-        Todo se guarda solo en localStorage. No hay cuenta ni sincronización.
-        OpenAlex: <a href="https://openalex.org" target="_blank" rel="noopener">openalex.org</a> ·
-        PubMed: <a href="https://pubmed.ncbi.nlm.nih.gov" target="_blank" rel="noopener">pubmed.ncbi.nlm.nih.gov</a>
-      </p>
-    </div>
+<div class="topbar">
+  <div class="tb-in">
+    <button class="logo" id="goHome" type="button" aria-label="Ir al inicio"><span class="anv"><svg class="i"><use href="#i-target"/></svg></span><span>Publication <em>Radar</em></span></button>
+    <nav class="stepper" id="stepper" aria-label="Pasos"></nav>
+    <div class="tb-tools"><button class="tb-btn" id="btnRadares" type="button"><svg class="i"><use href="#i-archive"/></svg><span class="lbl">Mis radares</span></button><button class="tb-btn" id="btnAjustes" type="button"><svg class="i"><use href="#i-sliders"/></svg><span class="lbl">Ajustes</span></button><button class="tb-btn" id="btnHelp" type="button"><svg class="i"><use href="#i-help"/></svg><span class="lbl">Ayuda</span></button></div>
   </div>
+  <div class="progress"><span id="progBar"></span></div>
+</div>
 
-  <script>
-    const SK = {
-      openai: "radar_openai",
-      openalex: "radar_openalex",
-      email: "radar_email",
-      topic: "radar_topic",
-      journals: "radar_journals",
-      followed: "radar_followed",
-      papers: "radar_papers",
-      seen: "radar_seen"
-    };
+<main id="app">
+<!-- ═════ 0 · INICIO ═════ -->
+<section class="screen" data-step="0">
+  <div class="hero">
+    <p class="eyebrow">Vigilancia bibliográfica · OpenAlex y PubMed · sin cuenta y sin clave · Universidad Miguel Hernández de Elche</p>
+    <h1>Lo último de las revistas <em>de tu tema</em></h1>
+    <p class="lede">Escribe tu tema de investigación. El radar descubre en qué revistas se publica de verdad, eliges las que quieres seguir y te muestra sus artículos nuevos. Cada vez que vuelvas, verás marcado lo que ha salido desde tu última visita.</p>
+    <div class="actions">
+      <button class="btn btn-primary btn-big" id="btnStart" type="button"><svg class="i"><use href="#i-play"/></svg>Crear un radar</button>
+      <button class="btn btn-ghost btn-big" id="btnDemo" type="button"><svg class="i"><use href="#i-eye"/></svg>Probar con un ejemplo</button>
+    </div>
+    <div class="draft hidden" id="volverBox"><svg class="i"><use href="#i-refresh"/></svg><span id="volverTxt" style="flex:1"></span><button class="btn btn-primary btn-sm" id="btnVolver" type="button">Ver novedades</button></div>
+    <p class="quote">Solo artículos que existen: <span>nada lo escribe la IA.</span></p>
+  </div>
+  <h2 class="sec-title">Cómo funciona</h2>
+  <div class="journey" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+    <div class="jstop" style="--c:#1F6FB2"><span class="jn">1</span><div class="ji"><svg class="i"><use href="#i-target"/></svg></div><b>Tu tema</b><span>Unas pocas palabras, mejor en inglés, como las pondrías en un buscador científico.</span></div>
+    <div class="jstop" style="--c:#6B4FD8"><span class="jn">2</span><div class="ji"><svg class="i"><use href="#i-book"/></svg></div><b>Tus revistas</b><span>Las que más han publicado sobre ese tema en los últimos años, con el número de artículos como prueba.</span></div>
+    <div class="jstop" style="--c:#0E8C7A"><span class="jn">3</span><div class="ji"><svg class="i"><use href="#i-doc"/></svg></div><b>Novedades</b><span>Artículos recientes de esas revistas, de OpenAlex y PubMed, con su resumen, su DOI y exportación a Zotero.</span></div>
+    <div class="jstop" style="--c:#E4572E"><span class="jn">4</span><div class="ji"><svg class="i"><use href="#i-sparkles"/></svg></div><b>Resumen opcional</b><span>Con una clave de OpenAI, un resumen en español de las novedades, basado solo en sus resúmenes.</span></div>
+  </div>
+</section>
 
-    let state = {
-      openaiKey: localStorage.getItem(SK.openai) || "",
-      openalexKey: localStorage.getItem(SK.openalex) || "",
-      email: localStorage.getItem(SK.email) || "",
-      topic: localStorage.getItem(SK.topic) || "",
-      journals: JSON.parse(localStorage.getItem(SK.journals) || "[]"),
-      followed: JSON.parse(localStorage.getItem(SK.followed) || "[]"),
-      papers: JSON.parse(localStorage.getItem(SK.papers) || "[]"),
-      seen: JSON.parse(localStorage.getItem(SK.seen) || "[]"),
-      filter: "all",
-      loading: false
-    };
+<!-- ═════ 1 · TEMA ═════ -->
+<section class="screen" data-step="1">
+  <header class="sh" style="--c:#1F6FB2"><div class="sh-ico"><svg class="i"><use href="#i-target"/></svg></div>
+    <div><p class="sh-step">Paso 1 de 3</p><h2>Tu tema</h2><p class="sh-lede">Escríbelo como en un buscador científico: pocas palabras y, si puedes, en inglés, que es el idioma de la mayoría de los resúmenes.</p></div></header>
+  <div class="cols">
+    <div class="card">
+      <div class="field"><label for="tema">Tema del radar</label><input type="text" id="tema" placeholder="diabetic retinopathy deep learning"></div>
+      <p class="sublab" style="margin-top:0">Ejemplos</p>
+      <div class="chips-ej" id="chipsEj"></div>
+      <div class="grid3" style="margin-top:16px">
+        <div class="field"><label for="ventana">Novedades de los últimos</label><select id="ventana"><option value="30">30 días</option><option value="90" selected>3 meses</option><option value="180">6 meses</option><option value="365">12 meses</option></select></div>
+        <div class="field"><label for="alcance">Qué artículos</label><select id="alcance"><option value="tema" selected>Solo los que tratan el tema</option><option value="todo">Todo lo que publican esas revistas</option></select></div>
+        <div class="field"><label for="fuentes">Fuentes</label><select id="fuentes"><option value="ambas" selected>OpenAlex y PubMed</option><option value="oa">Solo OpenAlex (todas las áreas)</option></select></div>
+      </div>
+      <p class="help" style="margin:0">PubMed solo cubre ciencias de la salud y de la vida; OpenAlex, todas las disciplinas.</p>
+    </div>
+    <aside class="card sticky"><h3><svg class="i"><use href="#i-bulb"/></svg>Consejo</h3><p class="sub">Un tema demasiado amplio («education») trae revistas generalistas; uno demasiado estrecho, muy pocas. Prueba y ajusta: puedes volver aquí cuando quieras.</p><p class="sub" style="margin:0">El radar funciona <b>sin clave</b>. La de OpenAI, en «Ajustes», solo sirve para el resumen opcional de novedades.</p></aside>
+  </div>
+</section>
 
-    function save(key, val) {
-      localStorage.setItem(key, typeof val === "string" ? val : JSON.stringify(val));
+<!-- ═════ 2 · REVISTAS ═════ -->
+<section class="screen" data-step="2">
+  <header class="sh" style="--c:#6B4FD8"><div class="sh-ico"><svg class="i"><use href="#i-book"/></svg></div>
+    <div><p class="sh-step">Paso 2 de 3</p><h2>Tus revistas</h2><p class="sh-lede" id="revLede">Las que más artículos han publicado sobre tu tema en los últimos cinco años, según OpenAlex. Marca las que quieres seguir.</p></div></header>
+  <div class="actions" style="margin-bottom:10px"><button class="btn btn-ghost btn-sm" id="selTop" type="button">Marcar las 8 primeras</button><button class="btn btn-ghost btn-sm" id="selNone" type="button">Ninguna</button><button class="btn btn-ghost btn-sm" id="addRev" type="button"><svg class="i"><use href="#i-plus"/></svg>Añadir una revista</button><button class="btn btn-ghost btn-sm" id="sugIA" type="button"><svg class="i"><use href="#i-sparkles"/></svg>Sugerencias de la IA</button><span class="help" id="selCount" style="margin:0"></span></div>
+  <div id="revistas"><p class="empty">Aún no hay revistas.</p></div>
+</section>
+
+<!-- ═════ 3 · NOVEDADES ═════ -->
+<section class="screen" data-step="3">
+  <header class="sh" style="--c:#0E8C7A"><div class="sh-ico"><svg class="i"><use href="#i-doc"/></svg></div>
+    <div><p class="sh-step">Paso 3 de 3</p><h2 id="novTitle">Novedades</h2><p class="sh-lede" id="novLede"></p></div></header>
+  <div class="cols">
+    <div>
+      <div class="filtros" id="filtros"><button type="button" data-f="todos" aria-pressed="true">Todos</button><button type="button" data-f="nuevos" aria-pressed="false">Nuevos</button><button type="button" data-f="pendientes" aria-pressed="false">Sin leer</button><button type="button" data-f="leidos" aria-pressed="false">Leídos</button><input type="search" id="buscar" placeholder="Filtrar por palabra, autor o revista…" aria-label="Filtrar"></div>
+      <div id="papers"><p class="empty">Aún no hay artículos.</p></div>
+    </div>
+    <aside>
+      <div class="card sticky">
+        <h3><svg class="i"><use href="#i-refresh"/></svg>Este radar</h3>
+        <div id="radarInfo" class="help" style="font-size:13.5px;margin:0 0 10px"></div>
+        <div class="actions" style="flex-direction:column;align-items:stretch">
+          <button class="btn btn-primary btn-sm" id="btnActualizar" type="button"><svg class="i"><use href="#i-refresh"/></svg>Buscar novedades ahora</button>
+          <button class="btn btn-ghost btn-sm" id="btnDigest" type="button"><svg class="i"><use href="#i-sparkles"/></svg>Resumir lo nuevo (con clave)</button>
+          <button class="btn btn-ghost btn-sm" id="btnLeidos" type="button"><svg class="i"><use href="#i-check"/></svg>Marcar todo como leído</button>
+        </div>
+        <p class="sublab">Exportar a Zotero, Mendeley…</p>
+        <div class="actions"><button class="btn btn-ghost btn-sm" id="expRis" type="button">RIS</button><button class="btn btn-ghost btn-sm" id="expBib" type="button">BibTeX</button><button class="btn btn-ghost btn-sm" id="expCsv" type="button">CSV</button></div>
+        <p class="help">Se exporta lo que ves con el filtro actual.</p>
+      </div>
+      <div class="card hidden" id="digestCard"><h3><svg class="i"><use href="#i-sparkles"/></svg>Resumen de novedades</h3><div class="digest" id="digest"></div><p class="help">Hecho por la IA solo con los resúmenes de estos artículos. Los números remiten a la lista.</p></div>
+    </aside>
+  </div>
+</section>
+</main>
+
+<footer><hr><p>Publication Radar · Fernando Borrás Rocher · Universidad Miguel Hernández de Elche. Datos de OpenAlex (CC0) y PubMed (NLM). Todos los artículos proceden de esas bases: la IA nunca genera referencias. Tus radares se guardan solo en este navegador.</p></footer>
+
+<div class="bottomnav"><div class="bn-in">
+  <button class="btn btn-ghost" id="navBack" type="button"><svg class="i"><use href="#i-left"/></svg>Atrás</button>
+  <div class="bn-hint" id="navHint"></div>
+  <button class="btn btn-primary" id="navNext" type="button"><span id="navNextTxt">Siguiente</span><svg class="i"><use href="#i-right"/></svg></button>
+</div></div>
+<div class="modal" id="mRadares" role="dialog" aria-modal="true" aria-labelledby="mRaT"><div class="modal-box"><div class="modal-head"><h2 id="mRaT">Mis radares</h2><button type="button" data-close>Cerrar</button></div><div class="modal-body"><div id="radares"></div><div class="actions" style="margin-top:12px"><button class="btn btn-primary btn-sm" id="nuevoRadar" type="button"><svg class="i"><use href="#i-plus"/></svg>Nuevo radar</button><button class="btn btn-ghost btn-sm" id="borrarTodo" type="button"><svg class="i"><use href="#i-trash"/></svg>Borrar todos mis datos</button></div></div></div></div>
+<div class="modal" id="mAjustes" role="dialog" aria-modal="true" aria-labelledby="mAjT"><div class="modal-box"><div class="modal-head"><h2 id="mAjT">Ajustes</h2><button type="button" data-close>Cerrar</button></div><div class="modal-body">
+  <div class="field"><label for="apiKey">Clave de OpenAI <small>(opcional: resumen de novedades y sugerencias de revistas)</small></label><div class="keyrow"><input type="password" id="apiKey" placeholder="sk-proj-…" autocomplete="off"><button class="eye" id="btnEye" type="button" aria-label="Mostrar u ocultar"><svg class="i"><use href="#i-eye"/></svg></button></div><p class="help">La misma del resto de herramientas del catálogo. Se guarda solo en este navegador.</p></div>
+  <div class="field"><label for="modelo">Modelo</label><select id="modelo"><option value="gpt-6-luna">gpt-6-luna</option><option value="gpt-4.1-mini">gpt-4.1-mini</option><option value="gpt-4o-mini">gpt-4o-mini</option></select></div>
+  <div class="field"><label for="email">Tu correo <small>(recomendado: OpenAlex y PubMed atienden mejor las consultas identificadas)</small></label><input type="email" id="email" placeholder="nombre@universidad.es"></div>
+  <div class="field" style="margin:0"><label for="oaKey">Clave de OpenAlex <small>(opcional, solo si tienes una)</small></label><input type="password" id="oaKey"></div>
+</div></div></div>
+<div class="modal" id="mHelp" role="dialog" aria-modal="true" aria-labelledby="mHelpT"><div class="modal-box"><div class="modal-head"><h2 id="mHelpT">Ayuda</h2><button type="button" data-close>Cerrar</button></div><div class="modal-body"><div class="glos" id="glos"></div></div></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+"use strict";
+/* ══════════════════════════════════════════════════════════
+   Publication Radar 2.0 · lo último de las revistas de tu tema
+   Fernando Borrás Rocher · Universidad Miguel Hernández de Elche
+   ══════════════════════════════════════════════════════════ */
+const $ = id => document.getElementById(id), $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ico = n => `<svg class="i"><use href="#i-${n}"/></svg>`;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+function toast(m, ms = 3800){ const t = $('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('on'), ms); }
+function dl(n, c, t){ const b = new Blob([c], {type:t}); const u = URL.createObjectURL(b); const a = document.createElement('a'); a.href = u; a.download = n; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 1500); }
+const hoy = () => new Date().toISOString().slice(0, 10);
+const haceDias = d => new Date(Date.now() - d * 864e5).toISOString().slice(0, 10);
+const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
+
+/* ══════════ ALMACÉN: varios radares ══════════ */
+let RADARES = [], R = null, trabajando = false;
+const guarda = () => { if(R && !R._demo){ const i = RADARES.findIndex(x => x.id === R.id); if(i >= 0) RADARES[i] = R; else RADARES.unshift(R); } try{ localStorage.setItem('radar_v2', JSON.stringify(RADARES.map(x => ({...x, papers:(x.papers || []).slice(0, 300)})))); if(R && !R._demo) localStorage.setItem('radar_v2_activo', R.id); }catch(e){ toast('El navegador no tiene más espacio: borra algún radar antiguo'); } };
+const nuevoRadar = () => ({id:'r' + Date.now(), tema:'', ventana:90, alcance:'tema', fuentes:'ambas', revistas:[], seguidas:[], papers:[], leidos:[], ultima:null, creado:Date.now()});
+function migraV1(){
+  if(localStorage.getItem('radar_v2') || !localStorage.getItem('radar_topic')) return;
+  const J = k => { try{ return JSON.parse(localStorage.getItem(k) || '[]'); }catch(e){ return []; } };
+  const jr = J('radar_journals'), fol = J('radar_followed'), pap = J('radar_papers'), seen = J('radar_seen');
+  const r = nuevoRadar(); r.tema = localStorage.getItem('radar_topic');
+  r.revistas = jr.filter(j => j.openalexId).map(j => ({id:j.openalexId.replace('https://openalex.org/', ''), name:j.name, issn:j.issn ? [j.issn] : [], hits:j.works || 0, origen:'openalex'}));
+  r.seguidas = r.revistas.filter(j => fol.includes(j.name)).map(j => j.id);
+  const reales = pap.filter(p => p.source === 'openalex' || p.source === 'pubmed'), inventados = pap.length - reales.length;
+  r.papers = reales.map(p => ({id:p.id, title:p.title, authors:p.authors, journal:p.journal, date:p.date, abstract:p.abstract, doi:p.doi, url:p.url, fuentes:[p.source], firstSeen:Date.now()}));
+  r.leidos = seen.filter(id => r.papers.some(p => p.id === id)); r.ultima = Date.now();
+  RADARES = [r]; localStorage.setItem('radar_v2', JSON.stringify(RADARES)); localStorage.setItem('radar_v2_activo', r.id);
+  if(!localStorage.getItem('ia_openai_key') && localStorage.getItem('radar_openai')) localStorage.setItem('ia_openai_key', localStorage.getItem('radar_openai'));
+  if(localStorage.getItem('radar_email')) localStorage.setItem('radar2_email', localStorage.getItem('radar_email'));
+  if(localStorage.getItem('radar_openalex')) localStorage.setItem('radar2_oakey', localStorage.getItem('radar_openalex'));
+  setTimeout(() => toast(`Tu radar de la versión anterior se ha migrado.${inventados ? ` Se han quitado ${inventados} artículo(s) que había generado la IA y no existían.` : ''}${jr.length > r.revistas.length ? ` Las revistas sugeridas por la IA sin comprobar se han quitado: vuelve a buscarlas.` : ''}`, 9000), 800);
+}
+
+/* ══════════ OPENALEX Y PUBMED ══════════ */
+async function oa(path){
+  const u = new URL('https://api.openalex.org' + path); const m = localStorage.getItem('radar2_email'), k = localStorage.getItem('radar2_oakey');
+  if(m) u.searchParams.set('mailto', m); if(k) u.searchParams.set('api_key', k);
+  const r = await fetch(u); if(!r.ok) throw new Error('OpenAlex respondió ' + r.status); return r.json();
+}
+const inv = o => { if(!o) return ''; const w = []; Object.entries(o).forEach(([k,ps]) => ps.forEach(p => w[p] = k)); return w.filter(Boolean).join(' '); };
+const SEL_SRC = 'id,display_name,issn_l,issn,host_organization_name,works_count,is_oa,is_in_doaj,type,summary_stats';
+const deSource = (s, hits, origen) => ({id:s.id.replace('https://openalex.org/', ''), name:s.display_name, issn:[s.issn_l, ...(s.issn || [])].filter((x,i,a) => x && a.indexOf(x) === i), publisher:s.host_organization_name || '', works:s.works_count || 0, oa:!!(s.is_oa || s.is_in_doaj), c2:s.summary_stats?.['2yr_mean_citedness'] || 0, hits, origen});
+async function descubrir(tema){
+  const g = await oa(`/works?search=${encodeURIComponent(tema)}&filter=from_publication_date:${haceDias(5 * 365)},type:article&group_by=primary_location.source.id`);
+  const top = (g.group_by || []).filter(x => x.key && !/null|unknown/i.test(x.key)).slice(0, 45);
+  if(!top.length) return [];
+  const ids = top.map(x => x.key.replace('https://openalex.org/', ''));
+  const s = await oa(`/sources?filter=openalex_id:${ids.join('|')}&per_page=50&select=${SEL_SRC}`);
+  const cuenta = Object.fromEntries(top.map(x => [x.key.replace('https://openalex.org/', ''), x.count]));
+  return (s.results || []).filter(x => x.type === 'journal').map(x => deSource(x, cuenta[x.id.replace('https://openalex.org/', '')] || 0, 'openalex')).sort((a,b) => b.hits - a.hits).slice(0, 30);
+}
+async function verificaRevista(nombre, tema){
+  const d = await oa(`/sources?search=${encodeURIComponent(nombre)}&filter=type:journal&per_page=5&select=${SEL_SRC}`);
+  const n = norm(nombre), s = (d.results || []).find(x => norm(x.display_name) === n) || (d.results || []).find(x => norm(x.display_name).includes(n) || n.includes(norm(x.display_name)));
+  if(!s) return null;
+  let hits = 0; try{ const c = await oa(`/works?search=${encodeURIComponent(tema)}&filter=primary_location.source.id:${s.id.replace('https://openalex.org/', '')},from_publication_date:${haceDias(5 * 365)}&per_page=1&select=id`); hits = c.meta?.count || 0; }catch(e){}
+  return deSource(s, hits, 'ia');
+}
+async function papersOA(){
+  const ids = R.seguidas.slice(0, 50), desde = haceDias(R.ventana);
+  const d = await oa(`/works?${R.alcance === 'tema' ? 'search=' + encodeURIComponent(R.tema) + '&' : ''}filter=primary_location.source.id:${ids.join('|')},from_publication_date:${desde},type:article|review&sort=publication_date:desc&per_page=100&select=id,doi,title,display_name,publication_date,authorships,primary_location,abstract_inverted_index,ids`);
+  return (d.results || []).map(w => ({id:w.doi ? 'doi:' + w.doi.replace('https://doi.org/', '').toLowerCase() : w.id, title:w.title || w.display_name || '(sin título)', authors:(w.authorships || []).slice(0, 6).map(a => a.author?.display_name).filter(Boolean).join(', ') + ((w.authorships || []).length > 6 ? ' et al.' : ''), journal:w.primary_location?.source?.display_name || '', date:w.publication_date || '', abstract:inv(w.abstract_inverted_index).slice(0, 2500), doi:w.doi ? w.doi.replace('https://doi.org/', '') : '', url:w.doi || w.id, pmid:(w.ids?.pmid || '').replace('https://pubmed.ncbi.nlm.nih.gov/', ''), fuentes:['OpenAlex']}));
+}
+async function papersPM(){
+  const issns = R.revistas.filter(j => R.seguidas.includes(j.id)).flatMap(j => j.issn).slice(0, 60); if(!issns.length) return [];
+  const m = localStorage.getItem('radar2_email'), id = m ? `&email=${encodeURIComponent(m)}&tool=PublicationRadar` : '';
+  const term = `${R.alcance === 'tema' ? '(' + R.tema + ') AND ' : ''}(${issns.map(i => `"${i}"[is]`).join(' OR ')})`;
+  const s = await (await fetch(`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(term)}&retmax=60&sort=pub_date&datetype=pdat&reldate=${R.ventana}&retmode=json${id}`)).json();
+  const pmids = s.esearchresult?.idlist || []; if(!pmids.length) return [];
+  const xml = new DOMParser().parseFromString(await (await fetch(`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${pmids.join(',')}&retmode=xml${id}`)).text(), 'text/xml');
+  const MES = {jan:'01', feb:'02', mar:'03', apr:'04', may:'05', jun:'06', jul:'07', aug:'08', sep:'09', oct:'10', nov:'11', dec:'12'};
+  return [...xml.querySelectorAll('PubmedArticle')].map(a => {
+    const q = s => a.querySelector(s)?.textContent || '', doi = [...a.querySelectorAll('ArticleId')].find(n => n.getAttribute('IdType') === 'doi')?.textContent || '', pmid = q('PMID');
+    const y = q('PubDate Year') || q('ArticleDate Year'), mo = q('PubDate Month') || q('ArticleDate Month'), dd = q('PubDate Day') || q('ArticleDate Day'), mm = MES[mo.slice(0, 3).toLowerCase()] || (mo ? mo.padStart(2, '0') : '01');
+    return {id:doi ? 'doi:' + doi.toLowerCase() : 'pmid:' + pmid, title:q('ArticleTitle') || '(sin título)', authors:[...a.querySelectorAll('Author')].slice(0, 6).map(x => `${x.querySelector('LastName')?.textContent || ''} ${x.querySelector('Initials')?.textContent || ''}`.trim()).filter(Boolean).join(', '), journal:q('Journal Title') || q('ISOAbbreviation'), date:y ? `${y}-${mm}-${(dd || '01').padStart(2, '0')}` : '', abstract:[...a.querySelectorAll('AbstractText')].map(x => (x.getAttribute('Label') ? x.getAttribute('Label') + ': ' : '') + x.textContent).join(' ').slice(0, 2500), doi, url:doi ? 'https://doi.org/' + doi : `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`, pmid, fuentes:['PubMed']};
+  });
+}
+
+/* ══════════ NAVEGACIÓN ══════════ */
+let step = 0;
+const STEPS = ['Inicio','Tema','Revistas','Novedades'];
+function buildStepper(){ $('stepper').innerHTML = STEPS.map((s,i) => `${i ? `<span class="sline${i <= step ? ' on' : ''}"></span>` : ''}<button class="sdot" type="button" data-go="${i}" data-state="${i < step ? 'done' : i === step ? 'now' : ''}" ${i === step ? 'aria-current="step"' : ''}><span class="n">${i < step ? ico('check') : i === 0 ? ico('target') : i}</span><span class="lbl">${s}</span></button>`).join(''); $$('#stepper [data-go]').forEach(b => b.onclick = () => irA(+b.dataset.go)); }
+function irA(i){ if(trabajando) return; if(i === 2 && !R?.revistas.length) return toast('Primero escribe el tema y busca revistas'); if(i === 3 && !R?.seguidas.length) return toast('Elige antes alguna revista'); go(i); }
+function go(i){ step = i; $$('.screen').forEach(s => s.classList.toggle('on', +s.dataset.step === i)); $('progBar').style.width = (i / 3 * 100) + '%'; if(i === 0) pintaVolver(); if(i === 1) cargaForm(); if(i === 2) pintaRevistas(); if(i === 3) pintaPapers(); buildStepper(); updateNav(); window.scrollTo({top:0, behavior:'instant'}); }
+const HINTS = ['Prueba el <b>ejemplo</b>: la búsqueda es real y no necesita clave.', 'Pocas palabras y, si puedes, en inglés.', 'El número indica cuántos artículos del tema publicó cada revista.', 'Lo marcado como <b>nuevo</b> ha salido desde tu última visita.'];
+function updateNav(){ $('navBack').classList.toggle('hidden', step === 0); $('navNextTxt').textContent = trabajando ? 'Buscando…' : ['Empezar','Buscar revistas', `Ver novedades (${R?.seguidas.length || 0} revistas)`, 'Nuevo radar'][step]; $('navNext').disabled = trabajando; $('navHint').innerHTML = HINTS[step]; }
+$('navBack').onclick = () => { if(!trabajando && step > 0) go(step - 1); };
+$('navNext').onclick = async () => {
+  if(trabajando) return;
+  if(step === 0){ if(!R || R._demo) R = nuevoRadar(); return go(1); }
+  if(step === 1) return buscarRevistas();
+  if(step === 2){ if(!R.seguidas.length) return toast('Marca al menos una revista'); guarda(); go(3); return actualizar(); }
+  if(step === 3){ R = nuevoRadar(); go(1); }
+};
+$('goHome').onclick = () => irA(0);
+$('btnStart').onclick = () => { R = nuevoRadar(); go(1); };
+
+/* ══════════ PASO 1 · TEMA ══════════ */
+const EJ = ['diabetic retinopathy deep learning','data envelopment analysis efficiency','generative AI higher education','clinical simulation nursing education','Mediterranean diet cardiovascular','inteligencia artificial educación universitaria'];
+$('chipsEj').innerHTML = EJ.map(e => `<button type="button">${esc(e)}</button>`).join('');
+$$('#chipsEj button').forEach(b => b.onclick = () => { $('tema').value = b.textContent; });
+function cargaForm(){ $('tema').value = R.tema; $('ventana').value = R.ventana; $('alcance').value = R.alcance; $('fuentes').value = R.fuentes; }
+['ventana','alcance','fuentes'].forEach(id => $(id).onchange = () => { R[id] = id === 'ventana' ? +$(id).value : $(id).value; guarda(); });
+$('tema').addEventListener('keydown', e => { if(e.key === 'Enter') $('navNext').click(); });
+async function buscarRevistas(){
+  const t = $('tema').value.trim(); if(t.length < 3){ $('tema').focus(); return toast('Escribe el tema'); }
+  if(t === R.tema && R.revistas.length) return go(2);
+  R.tema = t; R.ventana = +$('ventana').value; R.alcance = $('alcance').value; R.fuentes = $('fuentes').value;
+  trabajando = true; updateNav();
+  try{
+    const js = await descubrir(t);
+    if(!js.length) throw new Error('OpenAlex no encuentra artículos sobre ese tema. Prueba con otras palabras, mejor en inglés.');
+    const man = R.revistas.filter(j => j.origen !== 'openalex' && !js.some(x => x.id === j.id));
+    R.revistas = [...js, ...man]; R.seguidas = js.filter(j => j.hits >= 3).slice(0, 8).map(j => j.id).concat(man.map(j => j.id)); R.papers = []; R.leidos = []; R.ultima = null;
+    guarda(); go(2);
+  }catch(e){ toast(e.message, 7000); }
+  finally{ trabajando = false; updateNav(); }
+}
+
+/* ══════════ PASO 2 · REVISTAS ══════════ */
+function pintaRevistas(){
+  const max = Math.max(1, ...R.revistas.map(j => j.hits));
+  $('revLede').textContent = `Las que más han publicado sobre «${R.tema}» en los últimos cinco años, según OpenAlex. Marca las que quieres seguir.`;
+  $('revistas').innerHTML = R.revistas.map(j => `<label class="jr ${R.seguidas.includes(j.id) ? 'on' : ''}"><input type="checkbox" value="${esc(j.id)}" ${R.seguidas.includes(j.id) ? 'checked' : ''}><span><b>${esc(j.name)}</b>${j.oa ? '<span class="tag oa">acceso abierto</span>' : ''}${j.origen === 'ia' ? '<span class="tag ia">sugerida por la IA · comprobada</span>' : j.origen === 'manual' ? '<span class="tag man">añadida por ti</span>' : ''}<small>${esc(j.publisher || 'editorial no consta')}${j.issn.length ? ' · ISSN ' + esc(j.issn[0]) : ''}${j.c2 ? ' · citación media a 2 años ' + j.c2.toFixed(1) : ''}</small></span><span><span class="n">${j.hits} art.</span><span class="bar"><i style="width:${Math.round(j.hits / max * 100)}%"></i></span></span></label>`).join('');
+  $$('#revistas input').forEach(c => c.onchange = () => { R.seguidas = $$('#revistas input:checked').map(x => x.value); guarda(); pintaRevistas(); });
+  $('selCount').textContent = `${R.seguidas.length} de ${R.revistas.length} marcadas`; updateNav();
+}
+$('selTop').onclick = () => { R.seguidas = R.revistas.slice(0, 8).map(j => j.id); guarda(); pintaRevistas(); };
+$('selNone').onclick = () => { R.seguidas = []; guarda(); pintaRevistas(); };
+$('addRev').onclick = async () => {
+  const n = prompt('Nombre de la revista (tal como aparece en su web):'); if(!n || !n.trim()) return;
+  try{ const j = await verificaRevista(n.trim(), R.tema); if(!j) return toast('No encuentro esa revista en OpenAlex. Revisa el nombre.');
+    if(R.revistas.some(x => x.id === j.id)) return toast('Ya está en la lista');
+    if(!confirm(`¿Es «${j.name}»${j.publisher ? ' (' + j.publisher + ')' : ''}?`)) return;
+    j.origen = 'manual'; R.revistas.push(j); R.seguidas.push(j.id); guarda(); pintaRevistas(); }
+  catch(e){ toast(e.message); }
+};
+$('sugIA').onclick = async () => {
+  if(!localStorage.getItem('ia_openai_key')) return toast('Las sugerencias necesitan una clave de OpenAI (en Ajustes). El resto funciona sin ella.', 5000);
+  const b = $('sugIA'); b.disabled = true; b.innerHTML = '<span class="spin"></span> Comprobando sugerencias…';
+  try{
+    const r = await ia(`Sugieres revistas académicas con revisión por pares donde se publica sobre un tema. Solo revistas que existan, con su nombre exacto.`, `TEMA: ${R.tema}\nYA EN LA LISTA: ${R.revistas.map(j => j.name).join('; ')}\n\nDevuelve {"revistas":["nombre exacto", "..."]} con hasta 10 que NO estén ya en la lista.`, true);
+    let ok = 0, ko = 0;
+    for(const n of (r.revistas || []).slice(0, 10)){ const j = await verificaRevista(n, R.tema).catch(() => null); if(j && !R.revistas.some(x => x.id === j.id)){ R.revistas.push(j); ok++; } else if(!j) ko++; await sleep(100); }
+    guarda(); pintaRevistas(); toast(`${ok} sugerencia(s) añadida(s), comprobadas en OpenAlex.${ko ? ` ${ko} no se encontraron y se han descartado.` : ''}`, 6000);
+  }catch(e){ toast(e.message); }
+  finally{ b.disabled = false; b.innerHTML = ico('sparkles') + 'Sugerencias de la IA'; }
+};
+
+/* ══════════ PASO 3 · NOVEDADES ══════════ */
+async function actualizar(){
+  if(!R.seguidas.length) return;
+  trabajando = true; updateNav(); $('papers').innerHTML = `<div class="forging"><div class="spark">${ico('refresh')}</div><div style="flex:1"><b>Buscando novedades</b><span>En ${R.seguidas.length} revistas${R.fuentes === 'ambas' ? ', en OpenAlex y PubMed' : ', en OpenAlex'}…</span></div></div>`;
+  const prev = R.ultima;
+  try{
+    const [a, b] = await Promise.all([papersOA().catch(e => { toast('OpenAlex: ' + e.message); return []; }), R.fuentes === 'ambas' ? papersPM().catch(() => []) : []]);
+    const mapa = new Map(R.papers.map(p => [p.id, p])), tituloId = new Map([...mapa.values()].map(p => [norm(p.title).slice(0, 90), p.id]));
+    let nuevos = 0;
+    for(const p of [...a, ...b]){
+      const tid = tituloId.get(norm(p.title).slice(0, 90)), ex = mapa.get(p.id) || (tid && mapa.get(tid));
+      if(ex){ p.fuentes.forEach(f => { if(!ex.fuentes.includes(f)) ex.fuentes.push(f); }); if(!ex.abstract && p.abstract) ex.abstract = p.abstract; if(!ex.pmid && p.pmid) ex.pmid = p.pmid; continue; }
+      p.firstSeen = Date.now(); p.nuevo = !!prev; if(prev) nuevos++; mapa.set(p.id, p); tituloId.set(norm(p.title).slice(0, 90), p.id);
     }
+    R.papers = [...mapa.values()].sort((x,y) => (y.date || '').localeCompare(x.date || '')); R.prevUltima = prev; R.ultima = Date.now(); guarda();
+    toast(prev ? (nuevos ? `${nuevos} artículo(s) nuevo(s) desde tu última visita` : 'Nada nuevo desde tu última visita') : `${R.papers.length} artículos en la ventana de ${R.ventana} días`, 5000);
+  }finally{ trabajando = false; updateNav(); pintaPapers(); }
+}
+let filtro = 'todos';
+function visibles(){ const q = norm($('buscar').value); return R.papers.filter(p => filtro === 'nuevos' ? p.nuevo : filtro === 'pendientes' ? !R.leidos.includes(p.id) : filtro === 'leidos' ? R.leidos.includes(p.id) : true).filter(p => !q || norm(p.title + ' ' + p.authors + ' ' + p.journal + ' ' + p.abstract).includes(q)); }
+function pintaPapers(){
+  if(!R) return;
+  const lista = visibles(), nNuevos = R.papers.filter(p => p.nuevo).length, nPend = R.papers.filter(p => !R.leidos.includes(p.id)).length;
+  $('novTitle').textContent = R.tema || 'Novedades';
+  $('novLede').textContent = `${R.papers.length} artículos de ${R.seguidas.length} revistas en los últimos ${R.ventana} días · ${nPend} sin leer${nNuevos ? ' · ' + nNuevos + (nNuevos === 1 ? ' nuevo' : ' nuevos') : ''}`;
+  $('radarInfo').innerHTML = `<b>${esc(R.tema)}</b><br>${R.seguidas.length} revistas · ventana de ${R.ventana} días · ${R.alcance === 'tema' ? 'solo sobre el tema' : 'todo lo que publican'}<br>${R.ultima ? 'Última revisión: ' + new Date(R.ultima).toLocaleString('es-ES') : ''}${R._demo ? '<br><i>Ejemplo: no se guarda. Pulsa «Guardar este radar» en «Mis radares» si te interesa.</i>' : ''}`;
+  $('filtros').querySelectorAll('button').forEach(b => { const n = {todos:R.papers.length, nuevos:nNuevos, pendientes:nPend, leidos:R.leidos.length}[b.dataset.f]; b.textContent = {todos:'Todos', nuevos:'Nuevos', pendientes:'Sin leer', leidos:'Leídos'}[b.dataset.f] + ` (${n})`; b.setAttribute('aria-pressed', String(b.dataset.f === filtro)); });
+  if(trabajando) return;
+  $('papers').innerHTML = lista.length ? lista.map((p,i) => { const leido = R.leidos.includes(p.id); return `<article class="paper ${leido ? 'visto' : ''}"><a class="t" href="${esc(p.url)}" target="_blank" rel="noopener">${i + 1}. ${esc(p.title)}</a>${p.nuevo && !leido ? '<span class="tag nuevo">nuevo</span>' : ''}<div class="m"><b>${esc(p.journal)}</b> · ${esc(p.date)}${p.date > hoy() ? ' (fecha de número futuro)' : ''} · ${esc(p.authors || 's. a.')} ${p.fuentes.map(f => `<span class="tag ${f === 'PubMed' ? 'pm' : 'oa'}">${f}</span>`).join('')}</div>${p.abstract ? `<div class="abs" id="abs-${i}">${esc(p.abstract)}</div>` : ''}<div class="acts">${p.abstract ? `<button class="btn btn-ghost btn-sm" type="button" data-abs="${i}">Resumen</button>` : '<span class="help" style="margin:0">Sin resumen disponible</span>'}<button class="btn ${leido ? 'btn-ghost' : 'btn-dark'} btn-sm" type="button" data-leido="${esc(p.id)}">${leido ? 'Marcar sin leer' : 'Marcar leído'}</button>${p.doi ? `<a class="btn btn-ghost btn-sm" href="https://doi.org/${esc(p.doi)}" target="_blank" rel="noopener">DOI</a>` : ''}${p.pmid ? `<a class="btn btn-ghost btn-sm" href="https://pubmed.ncbi.nlm.nih.gov/${esc(p.pmid)}/" target="_blank" rel="noopener">PubMed</a>` : ''}</div></article>`; }).join('')
+    : `<p class="empty">${R.papers.length ? 'Nada con este filtro.' : `No hay artículos de estas revistas en los últimos ${R.ventana} días${R.alcance === 'tema' ? ' sobre el tema' : ''}. Amplía la ventana en el paso 1 o elige más revistas.`}</p>`;
+  $$('#papers [data-abs]').forEach(b => b.onclick = () => $('abs-' + b.dataset.abs).classList.toggle('on'));
+  $$('#papers [data-leido]').forEach(b => b.onclick = () => { const id = b.dataset.leido, k = R.leidos.indexOf(id); if(k < 0) R.leidos.push(id); else R.leidos.splice(k, 1); guarda(); pintaPapers(); });
+}
+$('filtros').addEventListener('click', e => { const b = e.target.closest('button[data-f]'); if(!b) return; filtro = b.dataset.f; pintaPapers(); });
+$('buscar').oninput = () => pintaPapers();
+$('btnActualizar').onclick = () => actualizar();
+$('btnLeidos').onclick = () => { const v = visibles(); v.forEach(p => { if(!R.leidos.includes(p.id)) R.leidos.push(p.id); }); guarda(); pintaPapers(); toast(`${v.length} marcado(s) como leído(s)`); };
 
-    function showAlert(msg, type = "error") {
-      const box = document.getElementById("alertBox");
-      box.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
-      setTimeout(() => { if (box.innerHTML.includes(msg.slice(0, 30))) box.innerHTML = ""; }, 7000);
-    }
+/* ══════════ RESUMEN OPCIONAL (solo con los resúmenes reales) ══════════ */
+async function ia(sys, usr, json){
+  const key = localStorage.getItem('ia_openai_key'); if(!key) throw new Error('Falta la clave de OpenAI (en Ajustes).');
+  const modelo = localStorage.getItem('radar2_model') || 'gpt-6-luna', body = {model:modelo, messages:[{role:'system', content:sys + (json ? '\nResponde SOLO con JSON válido.' : '')}, {role:'user', content:usr}]};
+  if(json) body.response_format = {type:'json_object'}; if(/^(gpt-[56]|o[1-9])/.test(modelo)) body.reasoning_effort = 'low'; else body.temperature = 0.3;
+  const r = await fetch('https://api.openai.com/v1/chat/completions', {method:'POST', headers:{'Content-Type':'application/json', Authorization:'Bearer ' + key}, body:JSON.stringify(body)});
+  if(!r.ok){ const t = await r.text(); throw new Error(r.status === 401 ? 'OpenAI no reconoce tu clave.' : /quota|billing/i.test(t) ? 'Tu cuenta de OpenAI no tiene saldo.' : 'OpenAI ' + r.status); }
+  const t = (await r.json()).choices?.[0]?.message?.content || ''; return json ? JSON.parse(t.replace(/^```(?:json)?|```$/g, '').trim()) : t.trim();
+}
+$('btnDigest').onclick = async () => {
+  if(!localStorage.getItem('ia_openai_key')){ toast('El resumen necesita una clave de OpenAI: añádela en Ajustes.', 5000); $('mAjustes').classList.add('on'); return; }
+  const lista = visibles().slice(0, 25); if(!lista.length) return toast('No hay artículos que resumir con este filtro');
+  const b = $('btnDigest'); b.disabled = true; b.innerHTML = '<span class="spin"></span> Resumiendo…';
+  try{
+    const t = await ia(`Eres un investigador que prepara un boletín de novedades bibliográficas para un colega. Escribes en español. Agrupa los artículos por subtemas y di en una o dos frases qué aporta cada grupo. Usa SOLO la información de los títulos y resúmenes dados: no añadas resultados, cifras ni conclusiones que no estén. Cita los artículos con su número entre corchetes, p. ej. [3]. Si un artículo no tiene resumen, menciónalo solo por su título. Sin markdown con # ni **.`, `TEMA DEL RADAR: ${R.tema}\n\n${lista.map((p,i) => `[${i + 1}] ${p.title} (${p.journal}, ${p.date})\n${p.abstract ? p.abstract.slice(0, 1200) : '(sin resumen)'}`).join('\n\n')}`, false);
+    $('digest').textContent = t; $('digestCard').classList.remove('hidden'); $('digestCard').scrollIntoView({behavior:'smooth', block:'start'});
+  }catch(e){ toast(e.message, 6000); }
+  finally{ b.disabled = false; b.innerHTML = ico('sparkles') + 'Resumir lo nuevo (con clave)'; }
+};
 
-    function escapeHtml(s) {
-      if (!s) return "";
-      return String(s)
-        .replace(/&/g, "&amp;").replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-    }
+/* ══════════ EXPORTACIÓN ══════════ */
+const base = () => 'radar_' + norm(R.tema).replace(/ /g, '_').slice(0, 30);
+const split = a => (a || '').split(/,\s*/).filter(x => x && x !== 'et al.');
+$('expRis').onclick = () => { const v = visibles(); if(!v.length) return toast('Nada que exportar'); dl(base() + '.ris', v.map(p => ['TY  - JOUR', 'TI  - ' + p.title, ...split(p.authors).map(a => 'AU  - ' + a), 'JO  - ' + p.journal, p.date ? 'PY  - ' + p.date.slice(0, 4) : '', p.date ? 'DA  - ' + p.date.replace(/-/g, '/') : '', p.doi ? 'DO  - ' + p.doi : '', p.abstract ? 'AB  - ' + p.abstract : '', 'UR  - ' + p.url, 'ER  - '].filter(Boolean).join('\r\n')).join('\r\n\r\n'), 'application/x-research-info-systems'); };
+$('expBib').onclick = () => { const v = visibles(); if(!v.length) return toast('Nada que exportar'); const k = new Set(); const bk = s => String(s || '').replace(/[{}]/g, ''); dl(base() + '.bib', v.map(p => { let key = (norm(split(p.authors)[0] || 'anon').split(' ').pop() || 'anon') + (p.date || '').slice(0, 4) + (norm(p.title).split(' ').find(w => w.length > 3) || ''); while(k.has(key)) key += 'b'; k.add(key); return `@article{${key},\n  title = {${bk(p.title)}},\n  author = {${bk(split(p.authors).join(' and '))}},\n  journal = {${bk(p.journal)}},\n  year = {${(p.date || '').slice(0, 4)}},${p.doi ? `\n  doi = {${p.doi}},` : ''}\n  url = {${p.url}}\n}`; }).join('\n\n'), 'application/x-bibtex'); };
+$('expCsv').onclick = () => { const v = visibles(); if(!v.length) return toast('Nada que exportar'); const q = x => `"${String(x ?? '').replace(/"/g, '""')}"`; dl(base() + '.csv', '\ufeff' + [['Título','Autores','Revista','Fecha','DOI','PMID','Enlace','Fuentes','Leído'].map(q).join(',')].concat(v.map(p => [p.title, p.authors, p.journal, p.date, p.doi, p.pmid, p.url, p.fuentes.join('+'), R.leidos.includes(p.id) ? 'sí' : 'no'].map(q).join(','))).join('\n'), 'text/csv;charset=utf-8'); };
 
-    // ---------- OpenAlex ----------
-    async function openAlexFetch(path) {
-      const url = new URL(`https://api.openalex.org${path}`);
-      if (state.openalexKey) url.searchParams.set("api_key", state.openalexKey);
-      url.searchParams.set("mailto", state.email || "radar@local.app");
-      const res = await fetch(url.toString());
-      if (!res.ok) throw new Error(`OpenAlex ${res.status}`);
-      return res.json();
-    }
+/* ══════════ MIS RADARES, AJUSTES Y EJEMPLO ══════════ */
+function pintaRadares(){
+  $('radares').innerHTML = (R?._demo ? `<div class="tip" style="margin-top:0">${ico('bulb')}<span>Estás viendo el ejemplo «${esc(R.tema)}». <button class="btn btn-primary btn-sm" id="guardaDemo" type="button">Guardar este radar</button></span></div>` : '') + (RADARES.length ? RADARES.map(r => `<div class="radar"><div style="flex:1"><b>${esc(r.tema || 'sin tema')}</b><small>${r.seguidas.length} revistas · ${r.papers.length} artículos · ${r.papers.filter(p => !r.leidos.includes(p.id)).length} sin leer${r.ultima ? ' · revisado ' + new Date(r.ultima).toLocaleDateString('es-ES') : ''}</small></div><button class="btn btn-primary btn-sm" data-ab="${r.id}">Abrir</button><button class="btn btn-ghost btn-sm" data-bo="${r.id}">Borrar</button></div>`).join('') : '<p class="help">Aún no tienes radares guardados.</p>');
+  if($('guardaDemo')) $('guardaDemo').onclick = () => { delete R._demo; R.id = 'r' + Date.now(); guarda(); pintaRadares(); pintaPapers(); toast('Radar guardado'); };
+  $$('#radares [data-ab]').forEach(b => b.onclick = () => { R = RADARES.find(x => x.id === b.dataset.ab); localStorage.setItem('radar_v2_activo', R.id); $('mRadares').classList.remove('on'); filtro = 'todos'; go(R.seguidas.length ? 3 : 1); if(R.seguidas.length) actualizar(); });
+  $$('#radares [data-bo]').forEach(b => b.onclick = () => { if(!confirm('¿Borrar este radar?')) return; RADARES = RADARES.filter(x => x.id !== b.dataset.bo); if(R && R.id === b.dataset.bo) R = null; guarda(); pintaRadares(); });
+}
+$('btnRadares').onclick = () => { pintaRadares(); $('mRadares').classList.add('on'); };
+$('nuevoRadar').onclick = () => { R = nuevoRadar(); $('mRadares').classList.remove('on'); go(1); };
+$('borrarTodo').onclick = () => { if(!confirm('¿Borrar todos tus radares y ajustes de esta app?')) return; ['radar_v2','radar_v2_activo','radar2_email','radar2_oakey','radar2_model'].forEach(k => localStorage.removeItem(k)); RADARES = []; R = null; $('mRadares').classList.remove('on'); go(0); toast('Datos borrados'); };
+$('btnAjustes').onclick = () => { $('apiKey').value = localStorage.getItem('ia_openai_key') || ''; $('email').value = localStorage.getItem('radar2_email') || ''; $('oaKey').value = localStorage.getItem('radar2_oakey') || ''; $('modelo').value = localStorage.getItem('radar2_model') || 'gpt-6-luna'; $('mAjustes').classList.add('on'); };
+$('apiKey').oninput = () => localStorage.setItem('ia_openai_key', $('apiKey').value.trim());
+$('email').onchange = () => localStorage.setItem('radar2_email', $('email').value.trim());
+$('oaKey').onchange = () => localStorage.setItem('radar2_oakey', $('oaKey').value.trim());
+$('modelo').onchange = () => localStorage.setItem('radar2_model', $('modelo').value);
+$('btnEye').onclick = () => { const k = $('apiKey'); k.type = k.type === 'password' ? 'text' : 'password'; };
+$('btnDemo').onclick = async () => { R = nuevoRadar(); R._demo = true; R.tema = 'diabetic retinopathy deep learning'; R.ventana = 180; go(1); toast('Ejemplo: busca revistas reales en OpenAlex, sin clave.'); await sleep(300); buscarRevistas(); };
+function pintaVolver(){ const r = RADARES.find(x => x.id === localStorage.getItem('radar_v2_activo')) || RADARES[0]; if(!r || !r.seguidas.length){ $('volverBox').classList.add('hidden'); return; } $('volverTxt').innerHTML = `Tu radar <b>${esc(r.tema)}</b>${r.ultima ? ' · última revisión ' + new Date(r.ultima).toLocaleDateString('es-ES') : ''}`; $('volverBox').classList.remove('hidden'); $('btnVolver').onclick = () => { R = r; filtro = 'todos'; go(3); actualizar(); }; }
+const GLOS = [['Artículos reales','Todos proceden de OpenAlex o de PubMed, con su enlace, su DOI o su PMID. La IA no genera referencias en ningún caso.'],['Descubrir revistas','Se cuentan los artículos sobre tu tema publicados en los últimos cinco años y se agrupan por revista. El número de cada revista es esa cuenta.'],['Sugerencias de la IA','Con clave, la IA propone revistas y la app comprueba cada una en OpenAlex: las que no existen se descartan.'],['Nuevo','Artículos que han aparecido desde tu revisión anterior de este radar.'],['Ventana','Cuántos días hacia atrás se buscan novedades. Algunas revistas publican con fecha de número futuro: se indica.'],['PubMed','Solo cubre ciencias de la salud y de la vida. Se busca por el ISSN de las revistas que sigues.'],['Exportar','RIS y BibTeX se importan en Zotero, Mendeley o EndNote. Se exporta lo que ves con el filtro actual.'],['Privacidad','Tus radares se guardan solo en este navegador. Las búsquedas van a OpenAlex y PubMed; solo el resumen opcional envía títulos y resúmenes a OpenAI.']];
+$('glos').innerHTML = GLOS.map(g => `<div><b>${esc(g[0])}</b><span>${esc(g[1])}</span></div>`).join('');
+$('btnHelp').onclick = () => $('mHelp').classList.add('on');
+$$('.modal').forEach(m => m.addEventListener('click', e => { if(e.target === m || e.target.hasAttribute('data-close')) m.classList.remove('on'); }));
+document.addEventListener('keydown', e => { if(e.key === 'Escape') $$('.modal').forEach(m => m.classList.remove('on')); });
 
-    async function findJournalsOpenAlex(topic) {
-      const journals = [];
-      try {
-        const sources = await openAlexFetch(`/sources?search=${encodeURIComponent(topic)}&per_page=50&filter=type:journal`);
-        (sources.results || []).forEach(s => {
-          journals.push({
-            id: s.id,
-            name: s.display_name,
-            issn: (s.issn_l || (s.issn && s.issn[0]) || ""),
-            works: s.works_count || 0,
-            source: "openalex",
-            openalexId: s.id
-          });
-        });
-
-        const works = await openAlexFetch(`/works?search=${encodeURIComponent(topic)}&per_page=1&group_by=primary_location.source.id`);
-        const groups = (works.group_by || []).slice(0, 35);
-        for (const g of groups) {
-          if (!g.key || g.key === "null") continue;
-          const already = journals.find(j => j.openalexId === g.key);
-          if (already) {
-            already.works = Math.max(already.works, g.count || 0);
-          } else {
-            try {
-              const id = g.key.replace("https://openalex.org/", "");
-              const src = await openAlexFetch(`/sources/${id}`);
-              journals.push({
-                id: src.id,
-                name: src.display_name,
-                issn: (src.issn_l || ""),
-                works: g.count || 0,
-                source: "openalex",
-                openalexId: src.id
-              });
-            } catch (_) {}
-          }
-        }
-      } catch (e) {
-        console.warn("OpenAlex journals error", e);
-      }
-      return journals;
-    }
-
-    function reconstructAbstract(inverted) {
-      if (!inverted || typeof inverted !== "object") return "";
-      const words = [];
-      for (const [word, positions] of Object.entries(inverted)) {
-        positions.forEach(pos => { words[pos] = word; });
-      }
-      return words.filter(Boolean).join(" ");
-    }
-
-    async function fetchPapersOpenAlex(topic, journalNames, limit = 15) {
-      const papers = [];
-      try {
-        const data = await openAlexFetch(
-          `/works?search=${encodeURIComponent(topic)}&sort=publication_date:desc&per_page=${limit}&filter=type:article`
-        );
-        (data.results || []).forEach(w => {
-          const source = w.primary_location?.source;
-          const journalName = source?.display_name || "Unknown";
-          const authors = (w.authorships || [])
-            .slice(0, 6)
-            .map(a => a.author?.display_name)
-            .filter(Boolean)
-            .join(", ");
-          const abstract = w.abstract_inverted_index
-            ? reconstructAbstract(w.abstract_inverted_index)
-            : (w.abstract || "");
-          papers.push({
-            id: w.id || `oa-${w.doi || Math.random().toString(36).slice(2)}`,
-            title: w.title || w.display_name || "Untitled",
-            authors: authors || "—",
-            journal: journalName,
-            date: w.publication_date || (w.publication_year ? `${w.publication_year}-01-01` : ""),
-            abstract: abstract.slice(0, 600),
-            doi: w.doi ? w.doi.replace("https://doi.org/", "") : "",
-            url: w.doi || w.id || "#",
-            source: "openalex"
-          });
-        });
-      } catch (e) {
-        console.warn("OpenAlex papers error", e);
-      }
-      return papers;
-    }
-
-    // ---------- PubMed ----------
-    async function findJournalsPubMed(topic) {
-      const journals = [];
-      try {
-        const term = encodeURIComponent(`${topic} AND ncbijournals[filter]`);
-        let url = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nlmcatalog&term=${term}&retmax=40&retmode=json`;
-        if (state.email) url += `&email=${encodeURIComponent(state.email)}&tool=PublicationRadar`;
-        const searchRes = await fetch(url);
-        if (!searchRes.ok) throw new Error("PubMed search failed");
-        const searchData = await searchRes.json();
-        const ids = searchData.esearchresult?.idlist || [];
-        if (!ids.length) return journals;
-
-        let sumUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=nlmcatalog&id=${ids.join(",")}&retmode=json`;
-        if (state.email) sumUrl += `&email=${encodeURIComponent(state.email)}&tool=PublicationRadar`;
-        const sumRes = await fetch(sumUrl);
-        if (!sumRes.ok) throw new Error("PubMed summary failed");
-        const sumData = await sumRes.json();
-        const result = sumData.result || {};
-        ids.forEach(id => {
-          const item = result[id];
-          if (!item) return;
-          const name = item.titleabbreviation || item.title || item.fulljournalname || id;
-          journals.push({
-            id: `pubmed-${id}`,
-            name: name,
-            issn: item.issn || item.essn || "",
-            works: 0,
-            source: "pubmed",
-            pubmedId: id
-          });
-        });
-      } catch (e) {
-        console.warn("PubMed journals (CORS frecuente):", e.message);
-      }
-      return journals;
-    }
-
-    async function fetchPapersPubMed(topic, limit = 10) {
-      const papers = [];
-      try {
-        const term = encodeURIComponent(topic);
-        let url = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${term}&retmax=${limit}&sort=date&retmode=json`;
-        if (state.email) url += `&email=${encodeURIComponent(state.email)}&tool=PublicationRadar`;
-        const searchRes = await fetch(url);
-        if (!searchRes.ok) throw new Error("PubMed esearch failed");
-        const searchData = await searchRes.json();
-        const ids = searchData.esearchresult?.idlist || [];
-        if (!ids.length) return papers;
-
-        let fetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${ids.join(",")}&retmode=xml`;
-        if (state.email) fetchUrl += `&email=${encodeURIComponent(state.email)}&tool=PublicationRadar`;
-        const fetchRes = await fetch(fetchUrl);
-        if (!fetchRes.ok) throw new Error("PubMed efetch failed");
-        const xml = await fetchRes.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(xml, "text/xml");
-        const articles = doc.querySelectorAll("PubmedArticle");
-        articles.forEach((art, i) => {
-          const title = art.querySelector("ArticleTitle")?.textContent || "Untitled";
-          const abstract = art.querySelector("AbstractText")?.textContent || "";
-          const journal = art.querySelector("Journal Title")?.textContent ||
-                          art.querySelector("ISOAbbreviation")?.textContent || "PubMed";
-          const year = art.querySelector("PubDate Year")?.textContent || "";
-          const month = art.querySelector("PubDate Month")?.textContent || "01";
-          const day = art.querySelector("PubDate Day")?.textContent || "01";
-          const authors = Array.from(art.querySelectorAll("Author"))
-            .slice(0, 5)
-            .map(a => {
-              const last = a.querySelector("LastName")?.textContent || "";
-              const init = a.querySelector("Initials")?.textContent || "";
-              return `${last} ${init}`.trim();
-            })
-            .filter(Boolean)
-            .join(", ");
-          const pmid = art.querySelector("PMID")?.textContent || ids[i];
-          const doiNode = Array.from(art.querySelectorAll("ArticleId")).find(n => n.getAttribute("IdType") === "doi");
-          const doi = doiNode?.textContent || "";
-          papers.push({
-            id: `pm-${pmid}`,
-            title,
-            authors: authors || "—",
-            journal,
-            date: year ? `${year}-${String(month).padStart(2,"0")}-${String(day).padStart(2,"0")}` : "",
-            abstract: abstract.slice(0, 600),
-            doi,
-            url: doi ? `https://doi.org/${doi}` : `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`,
-            source: "pubmed"
-          });
-        });
-      } catch (e) {
-        console.warn("PubMed papers (CORS frecuente):", e.message);
-      }
-      return papers;
-    }
-
-    // ---------- GPT ----------
-    async function gptSuggestJournals(topic) {
-      if (!state.openaiKey) return [];
-      const system = `Eres un experto en literatura científica. Devuelve SOLO un array JSON de 12-18 revistas académicas reales y relevantes para la temática dada.
-Cada objeto: {"name": "nombre exacto de la revista", "issn": "ISSN si lo conoces o vacío", "reason": "breve motivo"}
-Solo JSON puro, sin markdown.`;
-      const user = `Temática: ${topic}\nLista las mejores revistas académicas (peer-reviewed) donde se publica sobre este tema. Incluye tanto revistas top como especializadas.`;
-      try {
-        const res = await fetch("https://api.openai.com/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${state.openaiKey}`
-          },
-          body: JSON.stringify({
-            model: "gpt-6-luna",
-            messages: [
-              { role: "system", content: system },
-              { role: "user", content: user }
-            ],
-            temperature: 0.4,
-            max_tokens: 1800
-          })
-        });
-        if (!res.ok) throw new Error("OpenAI error");
-        const data = await res.json();
-        let content = data.choices[0].message.content.trim()
-          .replace(/^```json\\s*/i, "").replace(/^```\\s*/i, "").replace(/\\s*```$/, "");
-        const arr = JSON.parse(content);
-        return (arr || []).map((j, i) => ({
-          id: `gpt-${i}-${Date.now()}`,
-          name: j.name,
-          issn: j.issn || "",
-          works: 0,
-          source: "gpt",
-          reason: j.reason || ""
-        }));
-      } catch (e) {
-        console.warn("GPT journals error", e);
-        return [];
-      }
-    }
-
-    async function gptGeneratePapers(topic, journals, n = 8) {
-      const system = `Eres un generador de registros bibliográficos realistas.
-Devuelve SOLO un array JSON de exactamente ${n} objetos con estas claves:
-id, title, authors, journal, date (YYYY-MM-DD últimos 120 días), abstract (120-180 palabras), doi, url
-El journal debe ser uno de la lista proporcionada. Solo JSON puro.`;
-      const user = `Temática: ${topic}
-Revistas permitidas: ${journals.join(" | ")}
-Genera ${n} papers recientes y realistas.`;
-      try {
-        const res = await fetch("https://api.openai.com/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${state.openaiKey}`
-          },
-          body: JSON.stringify({
-            model: "gpt-6-luna",
-            messages: [
-              { role: "system", content: system },
-              { role: "user", content: user }
-            ],
-            temperature: 0.7,
-            max_tokens: 3200
-          })
-        });
-        if (!res.ok) return [];
-        const data = await res.json();
-        let content = data.choices[0].message.content.trim()
-          .replace(/^```json\\s*/i, "").replace(/^```\\s*/i, "").replace(/\\s*```$/, "");
-        const arr = JSON.parse(content);
-        return (arr || []).map((p, i) => ({
-          ...p,
-          id: p.id || `gpt-p-${Date.now()}-${i}`,
-          source: "gpt"
-        }));
-      } catch (_) {
-        return [];
-      }
-    }
-
-    // ---------- Render ----------
-    function renderJournals() {
-      const grid = document.getElementById("journalsGrid");
-      const card = document.getElementById("journalsCard");
-      if (!state.journals.length) {
-        card.style.display = "none";
-        return;
-      }
-      card.style.display = "block";
-      document.getElementById("journalsCount").textContent = state.journals.length;
-
-      const sorted = [...state.journals].sort((a, b) => (b.works || 0) - (a.works || 0));
-
-      grid.innerHTML = sorted.map(j => {
-        const checked = state.followed.includes(j.name) ? "checked" : "";
-        const tag = j.source === "openalex" ? "openalex" : j.source === "pubmed" ? "pubmed" : "gpt";
-        return `
-          <label class="journal-item">
-            <input type="checkbox" value="${escapeHtml(j.name)}" ${checked} />
-            <div>
-              <div>${escapeHtml(j.name)} <span class="source-tag ${tag}">${j.source}</span></div>
-              <div class="journal-meta">${j.issn ? "ISSN " + escapeHtml(j.issn) : ""} ${j.works ? "· ~" + j.works + " works" : ""} ${j.reason ? "· " + escapeHtml(j.reason) : ""}</div>
-            </div>
-          </label>`;
-      }).join("");
-    }
-
-    function renderPapers() {
-      const list = document.getElementById("papersList");
-      let papers = [...state.papers];
-      if (state.filter === "unseen") papers = papers.filter(p => !state.seen.includes(p.id));
-      else if (state.filter === "seen") papers = papers.filter(p => state.seen.includes(p.id));
-
-      const unseen = state.papers.filter(p => !state.seen.includes(p.id)).length;
-      document.getElementById("unseenCount").textContent = unseen;
-
-      if (!papers.length) {
-        list.innerHTML = `<div class="empty">${
-          state.papers.length === 0
-            ? "Aún no hay papers. Selecciona revistas y pulsa “Obtener papers”."
-            : "No hay papers con este filtro."
-        }</div>`;
-        return;
-      }
-
-      list.innerHTML = papers.map(p => {
-        const isSeen = state.seen.includes(p.id);
-        const tagClass = p.source === "openalex" ? "openalex" : p.source === "pubmed" ? "pubmed" : "gpt";
-        return `
-          <article class="paper ${isSeen ? "seen" : ""}" data-id="${escapeHtml(p.id)}">
-            <div class="paper-header">
-              <a class="paper-title" href="${escapeHtml(p.url)}" target="_blank" rel="noopener">${escapeHtml(p.title)}</a>
-              <span class="status-dot ${isSeen ? "seen" : ""}"></span>
-            </div>
-            <div class="paper-meta">
-              <strong>${escapeHtml(p.journal)}</strong> · ${escapeHtml(p.date)} · ${escapeHtml(p.authors)}
-              <span class="source-tag ${tagClass}">${p.source}</span>
-            </div>
-            <div class="abstract" id="abs-${escapeHtml(p.id)}">${escapeHtml(p.abstract)}</div>
-            <div class="paper-actions">
-              <button class="btn-secondary btn-sm toggle-abs" data-id="${escapeHtml(p.id)}">Ver abstract</button>
-              <button class="btn-sm ${isSeen ? "btn-secondary" : "btn-primary"} toggle-seen" data-id="${escapeHtml(p.id)}">
-                ${isSeen ? "Marcar no visto" : "Marcar visto"}
-              </button>
-              ${p.doi ? `<span style="font-size:0.75rem;color:var(--muted)">DOI: ${escapeHtml(p.doi)}</span>` : ""}
-            </div>
-          </article>`;
-      }).join("");
-
-      list.querySelectorAll(".toggle-seen").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const id = btn.dataset.id;
-          const idx = state.seen.indexOf(id);
-          if (idx === -1) state.seen.push(id);
-          else state.seen.splice(idx, 1);
-          save(SK.seen, state.seen);
-          renderPapers();
-        });
-      });
-      list.querySelectorAll(".toggle-abs").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const el = document.getElementById(`abs-${btn.dataset.id}`);
-          el.classList.toggle("expanded");
-          btn.textContent = el.classList.contains("expanded") ? "Ocultar" : "Ver abstract";
-        });
-      });
-    }
-
-    // ---------- Main actions ----------
-    async function searchJournals() {
-      const topic = document.getElementById("topicInput").value.trim();
-      if (!topic) { showAlert("Escribe una temática."); return; }
-      if (!state.openaiKey) {
-        showAlert("Necesitas una API Key de OpenAI (se usa como fallback y enriquecimiento).");
-        return;
-      }
-      if (state.loading) return;
-      state.loading = true;
-      const btn = document.getElementById("searchTopicBtn");
-      const label = document.getElementById("searchLabel");
-      btn.disabled = true;
-      label.innerHTML = `<span class="spinner"></span> Buscando...`;
-
-      try {
-        state.topic = topic;
-        save(SK.topic, topic);
-
-        const [oaJournals, pmJournals, gptJournals] = await Promise.all([
-          findJournalsOpenAlex(topic),
-          findJournalsPubMed(topic),
-          gptSuggestJournals(topic)
-        ]);
-
-        const map = new Map();
-        const add = (list) => {
-          list.forEach(j => {
-            const key = j.name.toLowerCase().trim();
-            if (!map.has(key)) map.set(key, j);
-            else {
-              const existing = map.get(key);
-              existing.works = Math.max(existing.works || 0, j.works || 0);
-              if (j.source === "openalex") existing.openalexId = j.openalexId;
-              if (j.source === "pubmed") existing.pubmedId = j.pubmedId;
-            }
-          });
-        };
-        add(oaJournals);
-        add(pmJournals);
-        add(gptJournals);
-
-        state.journals = Array.from(map.values());
-        if (state.followed.length === 0) {
-          state.followed = state.journals
-            .sort((a, b) => (b.works || 0) - (a.works || 0))
-            .slice(0, 8)
-            .map(j => j.name);
-        }
-        save(SK.journals, state.journals);
-        save(SK.followed, state.followed);
-        renderJournals();
-        document.getElementById("generateBtn").disabled = false;
-        document.getElementById("forceBtn").disabled = false;
-
-        showAlert(
-          `Encontradas ${state.journals.length} revistas (OpenAlex: ${oaJournals.length}, PubMed: ${pmJournals.length}, GPT: ${gptJournals.length}).`,
-          "info"
-        );
-        if (pmJournals.length === 0) {
-          showAlert("PubMed no devolvió resultados (CORS frecuente en navegador). OpenAlex + GPT cubren la mayoría.", "warn");
-        }
-      } catch (e) {
-        console.error(e);
-        showAlert("Error al buscar revistas: " + e.message);
-      } finally {
-        state.loading = false;
-        btn.disabled = false;
-        label.textContent = "Buscar revistas";
-      }
-    }
-
-    async function getPapers(force = false) {
-      if (!state.followed.length) {
-        showAlert("Selecciona al menos una revista y pulsa “Guardar selección”.");
-        return;
-      }
-      if (state.loading) return;
-      if (state.papers.length && !force) {
-        renderPapers();
-        showAlert("Mostrando papers guardados. Usa “Forzar nueva búsqueda” para actualizar.", "info");
-        return;
-      }
-
-      state.loading = true;
-      const btn = document.getElementById("generateBtn");
-      const label = document.getElementById("generateLabel");
-      btn.disabled = true;
-      label.innerHTML = `<span class="spinner"></span> Obteniendo...`;
-
-      try {
-        const topic = state.topic || document.getElementById("topicInput").value.trim();
-        const [oaPapers, pmPapers] = await Promise.all([
-          fetchPapersOpenAlex(topic, state.followed, 15),
-          fetchPapersPubMed(topic, 10)
-        ]);
-
-        const seenTitles = new Set();
-        const papers = [];
-        const addUnique = (list) => {
-          list.forEach(p => {
-            const key = (p.doi || p.title).toLowerCase().slice(0, 80);
-            if (!seenTitles.has(key)) {
-              seenTitles.add(key);
-              papers.push(p);
-            }
-          });
-        };
-        addUnique(oaPapers);
-        addUnique(pmPapers);
-
-        if (papers.length < 6 && state.openaiKey) {
-          const extra = await gptGeneratePapers(topic, state.followed, 8);
-          addUnique(extra);
-        }
-
-        state.papers = papers.slice(0, 25);
-        save(SK.papers, state.papers);
-        renderPapers();
-        showAlert(`Se obtuvieron ${state.papers.length} papers.`, "info");
-      } catch (e) {
-        console.error(e);
-        showAlert("Error al obtener papers: " + e.message);
-      } finally {
-        state.loading = false;
-        btn.disabled = false;
-        label.textContent = "📄 Obtener papers";
-      }
-    }
-
-    // ---------- Events ----------
-    document.getElementById("saveOpenaiBtn").addEventListener("click", () => {
-      const key = document.getElementById("openaiKey").value.trim();
-      if (!key.startsWith("sk-")) {
-        showAlert("La API Key de OpenAI debe empezar por sk-");
-        return;
-      }
-      state.openaiKey = key;
-      save(SK.openai, key);
-      document.getElementById("openaiKey").value = "";
-      updateKeyStatus();
-      showAlert("API Key de OpenAI guardada.", "info");
-    });
-
-    document.getElementById("saveExtraBtn").addEventListener("click", () => {
-      state.openalexKey = document.getElementById("openalexKey").value.trim();
-      state.email = document.getElementById("pubmedEmail").value.trim();
-      save(SK.openalex, state.openalexKey);
-      save(SK.email, state.email);
-      document.getElementById("openalexKey").value = "";
-      updateKeyStatus();
-      showAlert("Claves extras guardadas.", "info");
-    });
-
-    document.getElementById("searchTopicBtn").addEventListener("click", searchJournals);
-    document.getElementById("generateBtn").addEventListener("click", () => getPapers(false));
-    document.getElementById("forceBtn").addEventListener("click", () => getPapers(true));
-
-    document.getElementById("saveJournalsBtn").addEventListener("click", () => {
-      const checks = document.querySelectorAll("#journalsGrid input[type=checkbox]");
-      state.followed = Array.from(checks).filter(c => c.checked).map(c => c.value);
-      save(SK.followed, state.followed);
-      showAlert(`Selección guardada (${state.followed.length} revistas).`, "info");
-    });
-
-    document.getElementById("selectAllBtn").addEventListener("click", () => {
-      document.querySelectorAll("#journalsGrid input").forEach(c => c.checked = true);
-    });
-    document.getElementById("deselectAllBtn").addEventListener("click", () => {
-      document.querySelectorAll("#journalsGrid input").forEach(c => c.checked = false);
-    });
-
-    document.getElementById("addCustomBtn").addEventListener("click", () => {
-      const name = prompt("Nombre exacto de la revista:");
-      if (!name || !name.trim()) return;
-      const exists = state.journals.some(j => j.name.toLowerCase() === name.trim().toLowerCase());
-      if (exists) { showAlert("Ya está en la lista."); return; }
-      state.journals.push({ id: `custom-${Date.now()}`, name: name.trim(), source: "manual", works: 0 });
-      state.followed.push(name.trim());
-      save(SK.journals, state.journals);
-      save(SK.followed, state.followed);
-      renderJournals();
-    });
-
-    document.getElementById("filters").addEventListener("click", e => {
-      const btn = e.target.closest("button[data-filter]");
-      if (!btn) return;
-      state.filter = btn.dataset.filter;
-      document.querySelectorAll("#filters button").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      renderPapers();
-    });
-
-    document.getElementById("clearSeenBtn").addEventListener("click", () => {
-      if (!confirm("¿Borrar historial de vistos?")) return;
-      state.seen = [];
-      save(SK.seen, state.seen);
-      renderPapers();
-    });
-
-    document.getElementById("resetAllBtn").addEventListener("click", () => {
-      if (!confirm("¿Borrar TODO (claves, revistas, papers, historial)?")) return;
-      Object.values(SK).forEach(k => localStorage.removeItem(k));
-      location.reload();
-    });
-
-    function updateKeyStatus() {
-      const parts = [];
-      if (state.openaiKey) parts.push('<span style="color:var(--seen)">✓ OpenAI</span>');
-      if (state.openalexKey) parts.push('<span style="color:var(--seen)">✓ OpenAlex</span>');
-      if (state.email) parts.push('<span style="color:var(--seen)">✓ Email PubMed</span>');
-      document.getElementById("keyStatus").innerHTML = parts.length
-        ? parts.join(" · ")
-        : '<span style="color:var(--muted)">Ninguna clave guardada</span>';
-    }
-
-    function init() {
-      updateKeyStatus();
-      if (state.topic) document.getElementById("topicInput").value = state.topic;
-      if (state.journals.length) {
-        renderJournals();
-        document.getElementById("generateBtn").disabled = false;
-        document.getElementById("forceBtn").disabled = false;
-      }
-      renderPapers();
-    }
-    init();
-  </script>
+/* ══════════ ARRANQUE ══════════ */
+migraV1();
+try{ RADARES = JSON.parse(localStorage.getItem('radar_v2') || '[]'); }catch(e){ RADARES = []; }
+R = RADARES.find(x => x.id === localStorage.getItem('radar_v2_activo')) || null;
+go(0);
+</script>
 </body>
 </html>
